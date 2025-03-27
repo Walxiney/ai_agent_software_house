@@ -1,0 +1,254 @@
+team_selection_task:
+  description: >
+    You are responsible for analyzing the project {project_name} and selecting the appropriate team members to execute the development efficiently.
+
+    Instructions
+    ------------
+    - Carefully analyze the project requirements.
+    - Identify the necessary roles (e.g., Software Architect, Frontend Developer, Backend Developer, Aggregator).
+    - Assign tasks to the right agents based on their expertise.
+    - Ensure that dependencies are respected (e.g., Software Architect must define architecture before development starts).
+    - Output example inplace of <Left brace> use curly bracket opened to right and <Right brace> use curly bracket opened to left:
+     <Left brace>
+      agents_tasks: 
+        <Left brace>
+          agent: task
+        <Right brace>,
+        <Left brace>
+          agent: task
+        <Right brace>,
+    <Right brace>
+    - Always add the code_aggregator_agent and his task code_aggregation_task in the end of the team selected this agent is repponsible for organise everything for the user.
+
+    Agents available for assignment:
+    {agents_tasks}
+
+    Project Description:
+    {project_description}
+
+  expected_output: >
+    The result must be a simple JSON object with all necessary agenst and their roles, only this structure and nothing else.
+  # agent: team_selector_agent
+
+define_requirements:
+  description: >
+    Coletar e organizar os requisitos do projeto {project_name}. Isso inclui entender as necessidades do negócio, 
+    documentar funcionalidades e criar histórias de usuário detalhadas. O backlog deve ser priorizado com base 
+    no impacto e urgência do cliente.
+
+    Descrição do projeto:
+    {project_description}
+
+  expected_output: >
+    Um backlog detalhado com requisitos bem definidos, incluindo user stories, critérios de aceitação e 
+    uma visão geral do escopo do projeto.
+  # agent: product_owner
+
+manage_sprints:
+  description: >
+    Gerenciar sprints do projeto {project_name} seguindo metodologias ágeis. Facilitar reuniões diárias, remover bloqueios 
+    e garantir que a equipe esteja no caminho certo para cumprir as metas estabelecidas.
+
+    Descrição do projeto:
+    {project_description}
+
+  expected_output: >
+    Um relatório de progresso detalhado de cada sprint, destacando tarefas concluídas, impedimentos encontrados 
+    e ajustes no planejamento.
+  # agent: scrum_master
+
+design_architecture:
+  description: >
+    Criar a arquitetura do software para o projeto {project_name}, incluindo definição de padrões, escolha de tecnologias e estruturação dos 
+    componentes principais. Deve garantir escalabilidade, segurança e eficiência.
+    Priorizando uso da linguagem Python no backend quando não houver linguagem especificada na descrição do projeto.
+
+    Descrição do projeto:
+    {project_description}
+
+  expected_output: >
+    Um documento detalhado de arquitetura contendo diagramas UML, decisões técnicas justificadas e padrões adotados.
+  # agent: software_architect
+
+develop_frontend:
+  description: >
+    Desenvolver a interface do usuário do sistema no projeto {project_name}, garantindo acessibilidade, responsividade e boa experiência 
+    para o usuário. Implementar componentes interativos e estilização conforme padrões UX/UI.
+
+    Descrição do projeto:
+    {project_description}
+
+  expected_output: >
+    Código fonte estruturado e documentado para o frontend, seguindo boas práticas de desenvolvimento e acessibilidade.
+  # agent: frontend_developer
+
+develop_backend:
+  description: >
+    Implementar a lógica de negócios e APIs do sistema para o projeto {project_name}. Garantir que o backend seja seguro, escalável e bem integrado 
+    ao frontend (quando houver) e banco de dados (quando houver).
+
+    Descrição do projeto:
+    {project_description}
+
+  expected_output: >
+    Código backend eficiente e otimizado, com documentação de endpoints e lógica de negócios.
+  # agent: backend_developer
+
+manage_database:
+  description: >
+    Modelar e otimizar o banco de dados para o projeto {project_name}, garantindo consistência, integridade e alta performance das consultas. 
+    Criar scripts de migração e gestão de dados.
+
+    Descrição do projeto:
+    {project_description}
+
+  expected_output: >
+    Modelo de banco de dados bem estruturado, incluindo diagramas relacionais e scripts SQL/NoSQL otimizados.
+  # agent: database_engineer
+
+implement_devops:
+  description: >
+    Configurar pipelines de CI/CD para o projeto {project_name}, gerenciar infraestrutura na nuvem e automatizar deploys para garantir 
+    um fluxo de desenvolvimento eficiente e seguro.
+
+    Descrição do projeto:
+    {project_description}
+
+  expected_output: >
+    Configuração completa de CI/CD e infraestrutura como código, garantindo estabilidade e automação no deploy.
+  # agent: devops_engineer
+
+execute_tests:
+  description: >
+    Criar e rodar testes automatizados (unitários, integração e end-to-end) para o projeto {project_name}. Garantir que o software esteja livre 
+    de bugs e cumpra os requisitos do cliente.
+
+    Descrição do projeto:
+    {project_description}
+
+  expected_output: >
+    Relatório de testes com métricas de cobertura, falhas encontradas e sugestões de melhoria.
+  # agent: qa_engineer
+
+ensure_security:
+  description: >
+    Realizar auditorias de segurança no código para o projeto {project_name}, identificar vulnerabilidades e implementar práticas seguras para 
+    proteção contra ataques cibernéticos.
+
+    Descrição do projeto:
+    {project_description}
+
+  expected_output: >
+    Relatório de segurança detalhado, incluindo vulnerabilidades detectadas, recomendações e ajustes implementados.
+  # agent: security_engineer
+
+write_documentation:
+  description: >
+    Gerar documentação técnica completa para o projeto {project_name}, incluindo API docs, guias de usuário e manuais de referência para desenvolvedores.
+
+    Descrição do projeto:
+    {project_description}
+
+  expected_output: >
+    Documentação clara e organizada, utilizando Markdown, Swagger e Wiki para fácil consulta.
+  # agent: technical_writer
+
+design_ui_ux:
+  description: >
+    Criar protótipos e wireframes para interfaces do usuário no projeto {project_name}, garantindo uma experiência fluida e visualmente atraente.
+
+    Descrição do projeto:
+    {project_description}
+
+  expected_output: >
+    Protótipos interativos no Figma/Adobe XD e diretrizes de design para implementação.
+  # agent: ux_ui_designer
+
+analyze_business:
+  description: >
+    Com base no projeto {project_name} estudar o mercado, concorrência e tendências para fornecer insights estratégicos ao cliente, auxiliando na 
+    tomada de decisões.
+
+    Descrição do projeto:
+    {project_description}
+
+  expected_output: >
+    Relatório de análise de mercado detalhado, com dados, gráficos e recomendações estratégicas.
+  # agent: business_analyst
+
+develop_ml_models:
+  description: >
+    Criar e treinar modelos de machine learning para resolver problemas específicos do projeto {project_name}, garantindo performance 
+    e precisão.
+
+    Descrição do projeto:
+    {project_description}
+
+  expected_output: >
+    Código otimizado para modelos de machine learning, documentado e integrado ao sistema.
+  # agent: ai_ml_engineer
+
+code_task:
+  description: >
+    You will create a complete project, {project_name}, using python in the backend, and for frontend you can chose the approach and stack,
+    these are the instructions:
+
+    Instructions
+    ------------
+    {project_description}
+    
+  expected_output: >
+    Your Final answer must be the full frontend and backend code, only the frontend and backend code and nothing else.
+  # agent: senior_fullstack_engineer_agent
+
+review_task:
+  description: >
+    You will create a complete project, {project_name}, using python in the backend, and for frontend you can chose the approach and stack,
+    these are the instructions:
+
+    Instructions
+    ------------
+    {project_description}
+
+    Using the code you got, check for errors. Check for logic errors,
+    syntax errors, missing imports, variable declarations, mismatched brackets,
+    and security vulnerabilities.
+  
+  expected_output: >
+    Your Final answer must be the full frontend and backend code, only the frontend and backend code and nothing else.
+  # agent: qa_engineer_agent
+
+evaluate_task:
+  description: >
+    You are helping create a project, {project_name}, using python in the backend, and for frontend you can chose the approach and stack,
+    these are the instructions:
+
+    Instructions
+    ------------
+    {project_description}
+
+    You will look over the code to insure that it is complete and
+    does the job that it is supposed to do.
+  
+  expected_output: >
+    Your Final answer must be the full frontend and backend code, only the frontend and backend code and nothing else.
+  # agent: chief_qa_engineer_agent
+
+code_aggregation_task:
+  description: >
+    You are responsible for organizing and structuring the project {project_name}.
+    The backend is built using Python, and for the frontend, you can choose the most 
+    appropriate stack based on the project requirements.
+
+    Instructions
+    ------------
+    {project_description}
+
+    Your job is to review, aggregate, and organize all frontend and backend code, ensuring 
+    that the project structure is clear. You must also check if execution steps are present 
+    in the documentation; if they are missing, add them to guide the user in running the project.
+  
+  expected_output: >
+    The final output must be a structured frontend and backend project, properly documented, 
+    with all required steps to execute the project. Output only the structured code and documentation.
+  # agent: code_aggregator_agent,
