@@ -1,37 +1,6 @@
-team_selection_task:
-  description: >
-    You are responsible for analyzing the project {project_name} and selecting the appropriate team members to execute the development efficiently.
-
-    Instructions
-    ------------
-    - Carefully analyze the project requirements.
-    - Identify the necessary roles (e.g., Software Architect, Frontend Developer, Backend Developer, Aggregator).
-    - Assign tasks to the right agents based on their expertise.
-    - Ensure that dependencies are respected (e.g., Software Architect must define architecture before development starts).
-    - You must follow the example, inplace of <Left brace> use curly bracket opened to right and <Right brace> use curly bracket opened to left:
-     <Left brace>
-      agents_tasks: 
-        <Left brace>
-          agent: task
-        <Right brace>,
-        <Left brace>
-          agent: task
-        <Right brace>,
-    <Right brace>
-    - The output must be a JSON (python dictionary) object with the following structure, one dictionary with one key called agents_tasks ansd the value must be another dictionary with the agents and their tasks.
-    - Always add the code_aggregator_agent and his task code_aggregation_task in the end of the team selected this agent is repponsible for organise everything for the user.
-
-    Agents available for assignment:
-    {agents_tasks}
-
-    Project Description:
-    {project_description}
-
-  expected_output: >
-    The result must be a simple JSON object with all necessary agenst and their roles, only this structure and nothing else.
-  agent: team_selector_agent
-
+# This file contains the tasks for the software house project.
 define_requirements:
+  name: define_requirements
   description: >
     Coletar e organizar os requisitos do projeto {project_name}. Isso inclui entender as necessidades do negócio, 
     documentar funcionalidades e criar histórias de usuário detalhadas. O backlog deve ser priorizado com base 
@@ -46,6 +15,7 @@ define_requirements:
   agent: product_owner
 
 design_architecture:
+  name: design_architecture
   description: >
     Criar a arquitetura do software para o projeto {project_name}, incluindo definição de padrões, escolha de tecnologias e estruturação dos 
     componentes principais. Deve garantir escalabilidade, segurança e eficiência.
@@ -59,6 +29,7 @@ design_architecture:
   agent: software_architect
 
 write_documentation:
+  name: write_documentation
   description: >
     Gerar documentação técnica completa para o projeto {project_name}, incluindo API docs, guias de usuário e manuais de referência para desenvolvedores.
 
@@ -70,6 +41,7 @@ write_documentation:
   agent: technical_writer
 
 code_task:
+  name: code_task
   description: >
     You will create a complete project, {project_name}, using python in the backend, and for frontend you can chose the approach and stack,
     these are the instructions:
@@ -83,6 +55,7 @@ code_task:
   agent: senior_fullstack_engineer_agent
 
 review_task:
+  name: review_task
   description: >
     You will create a complete project, {project_name}, using python in the backend, and for frontend you can chose the approach and stack,
     these are the instructions:
@@ -100,6 +73,7 @@ review_task:
   agent: qa_engineer_agent
 
 evaluate_task:
+  name: evaluate_task
   description: >
     You are helping create a project, {project_name}, using python in the backend, and for frontend you can chose the approach and stack,
     these are the instructions:
@@ -116,6 +90,7 @@ evaluate_task:
   agent: chief_qa_engineer_agent
 
 code_aggregation_task:
+  name: code_aggregation_task
   description: >
     You are responsible for organizing and structuring the project {project_name}.
     The backend is built using Python, and for the frontend, you can choose the most 
