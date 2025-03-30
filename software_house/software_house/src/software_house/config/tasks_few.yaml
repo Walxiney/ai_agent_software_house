@@ -1,0 +1,110 @@
+# This file contains the tasks for the software house project.
+define_requirements:
+  name: define_requirements
+  description: >
+    Coletar e organizar os requisitos do projeto {project_name}. Isso inclui entender as necessidades do negócio, 
+    documentar funcionalidades e criar histórias de usuário detalhadas. O backlog deve ser priorizado com base 
+    no impacto e urgência do cliente.
+
+    Descrição do projeto:
+    {project_description}
+
+  expected_output: >
+    Um backlog detalhado com requisitos bem definidos, incluindo user stories, critérios de aceitação e 
+    uma visão geral do escopo do projeto.
+  agent: product_owner
+
+design_architecture:
+  name: design_architecture
+  description: >
+    Criar a arquitetura do software para o projeto {project_name}, incluindo definição de padrões, escolha de tecnologias e estruturação dos 
+    componentes principais. Deve garantir escalabilidade, segurança e eficiência.
+    Priorizando uso da linguagem Python no backend quando não houver linguagem especificada na descrição do projeto.
+
+    Descrição do projeto:
+    {project_description}
+
+  expected_output: >
+    Um documento detalhado de arquitetura contendo diagramas UML, decisões técnicas justificadas e padrões adotados.
+  agent: software_architect
+
+write_documentation:
+  name: write_documentation
+  description: >
+    Gerar documentação técnica completa para o projeto {project_name}, incluindo API docs, guias de usuário e manuais de referência para desenvolvedores.
+
+    Descrição do projeto:
+    {project_description}
+
+  expected_output: >
+    Documentação clara e organizada, utilizando Markdown, Swagger e Wiki para fácil consulta.
+  agent: technical_writer
+
+code_task:
+  name: code_task
+  description: >
+    You will create a complete project, {project_name}, using python in the backend, and for frontend you can chose the approach and stack,
+    these are the instructions:
+
+    Instructions
+    ------------
+    {project_description}
+    
+  expected_output: >
+    Your Final answer must be the full frontend and backend code, only the frontend and backend code and nothing else.
+  agent: senior_fullstack_engineer_agent
+
+review_task:
+  name: review_task
+  description: >
+    You will create a complete project, {project_name}, using python in the backend, and for frontend you can chose the approach and stack,
+    these are the instructions:
+
+    Instructions
+    ------------
+    {project_description}
+
+    Using the code you got, check for errors. Check for logic errors,
+    syntax errors, missing imports, variable declarations, mismatched brackets,
+    and security vulnerabilities.
+  
+  expected_output: >
+    Your Final answer must be the full frontend and backend code, only the frontend and backend code and nothing else.
+  agent: qa_engineer_agent
+
+evaluate_task:
+  name: evaluate_task
+  description: >
+    You are helping create a project, {project_name}, using python in the backend, and for frontend you can chose the approach and stack,
+    these are the instructions:
+
+    Instructions
+    ------------
+    {project_description}
+
+    You will look over the code to insure that it is complete and
+    does the job that it is supposed to do.
+  
+  expected_output: >
+    Your Final answer must be the full frontend and backend code, only the frontend and backend code and nothing else.
+  agent: chief_qa_engineer_agent
+
+code_aggregation_task:
+  name: code_aggregation_task
+  description: >
+    You are responsible for organizing and structuring the project {project_name}.
+    The backend is built using Python, and for the frontend, you can choose the most 
+    appropriate stack based on the project requirements.
+
+    Instructions
+    ------------
+    {project_description}
+
+    Your job is to review, aggregate, and organize all frontend and backend code, ensuring 
+    that the project structure is clear. You must also check if execution steps are present 
+    in the documentation; if they are missing, add them to guide the user in running the project.
+  
+  expected_output: >
+    The final output must be a structured frontend and backend project, properly documented, 
+    with all required steps to execute the project. Output only the structured code and documentation.
+  agent: code_aggregator_agent
