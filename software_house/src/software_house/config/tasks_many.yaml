@@ -199,7 +199,7 @@ code_task:
     
   expected_output: >
     Your Final answer must be the full frontend and backend code, only the frontend and backend code and nothing else.
-  agent: senior_fullstack_engineer_agent
+  agent: fullstack_engineer_agent
 
 review_task:
   description: >

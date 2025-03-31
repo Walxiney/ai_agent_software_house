@@ -30,7 +30,7 @@ technical_writer:
   verbose: true
   allow_delegation: false
 
-senior_fullstack_engineer_agent:
+fullstack_engineer_agent:
   role: >
     Senior FullStack Software Engineer
   goal: >

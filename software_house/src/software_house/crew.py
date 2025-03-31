@@ -33,6 +33,24 @@ class AgentsTasksCrew():
                 configs[config_type] = yaml.safe_load(file)
 
         return configs
+    
+    def create_project_structure(base_path="MySoftwareProject"):
+        structure = {
+            "src": ["backend", "frontend", "data", "utils"],
+            "docs": [],
+            "tests": [],
+            "config": [],
+            "scripts": [],
+            "deploy": [],
+        }
+
+        for folder, subfolders in structure.items():
+            folder_path = os.path.join(base_path, folder)
+            os.makedirs(folder_path, exist_ok=True)
+            for sub in subfolders:
+                os.makedirs(os.path.join(folder_path, sub), exist_ok=True)
+        
+        print(f"Directory structure for '{base_path}' created successfully.")
 
     def crew_orchestrator(self)-> Crew:
         """
@@ -89,6 +107,11 @@ class AgentsTasksCrew():
         - input: team (dict) - Dictionary containing the team configuration
         - output: Crew object
         """
+        try:
+            # Creating the project structure
+            self.create_project_structure()
+        except Exception as e:
+            print(f"Error on create_project_structure: {e}")
 
         # Load configurations from YAML files
         configs = self.read_agents_tasks()
@@ -111,27 +134,27 @@ class AgentsTasksCrew():
                     )
         except Exception as e:
             print(f"Error while creating agents: {e}")
-
+        
         try:
             # Dynamically create tasks based on the agents
             tasks = []
-            output_dir = f"software_house/src/software_house/{folder_name}"
-            # Ensure the output directory exists
-            os.makedirs(output_dir, exist_ok=True)
+            # output_dir = f"software_house/src/software_house/{folder_name}"
+            # # Ensure the output directory exists
+            # os.makedirs(output_dir, exist_ok=True)
 
             for agent_key, task_key in team["agents_tasks"].items():
                 if agent_key in agents and task_key in tasks_config:
 
-                    # Define the output file path
-                    output_file_path = os.path.join(output_dir, f"{task_key}.txt")
-                    # Create or overwrite the file (ensure it's ready for writing)
-                    with open(output_file_path, "w", encoding="utf-8") as file:
-                        file.write("")  # Write an empty string to initialize or clear the file
+                    # # Define the output file path
+                    # output_file_path = os.path.join(output_dir, f"{agent_key}.txt")
+                    # # Create or overwrite the file (ensure it's ready for writing)
+                    # with open(output_file_path, "w", encoding="utf-8") as file:
+                    #     file.write("")  # Write an empty string to initialize or clear the file
                     
                     task = Task(
                         config=tasks_config[task_key],
                         agent=agents[agent_key],
-                        output_file=output_file_path,
+                        # output_file=output_file_path,
                         context=None,  # Initialize context as None
                     )
                     tasks.append(task)

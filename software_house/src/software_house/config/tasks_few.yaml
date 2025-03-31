@@ -13,6 +13,7 @@ define_requirements:
     Um backlog detalhado com requisitos bem definidos, incluindo user stories, critérios de aceitação e 
     uma visão geral do escopo do projeto.
   agent: product_owner
+  output_file: software_house/src/software_house/agent_output/product_owner.md
 
 design_architecture:
   name: design_architecture
@@ -27,6 +28,7 @@ design_architecture:
   expected_output: >
     Um documento detalhado de arquitetura contendo diagramas UML, decisões técnicas justificadas e padrões adotados.
   agent: software_architect
+  output_file: software_house/src/software_house/agent_output/software_architect.md
 
 write_documentation:
   name: write_documentation
@@ -39,6 +41,7 @@ write_documentation:
   expected_output: >
     Documentação clara e organizada, utilizando Markdown, Swagger e Wiki para fácil consulta.
   agent: technical_writer
+  output_file: software_house/src/software_house/agent_output/technical_writer.md
 
 code_task:
   name: code_task
@@ -52,7 +55,8 @@ code_task:
     
   expected_output: >
     Your Final answer must be the full frontend and backend code, only the frontend and backend code and nothing else.
-  agent: senior_fullstack_engineer_agent
+  agent: fullstack_engineer_agent
+  output_file: software_house/src/software_house/agent_output/fullstack_engineer_agent.py
 
 review_task:
   name: review_task
@@ -71,6 +75,7 @@ review_task:
   expected_output: >
     Your Final answer must be the full frontend and backend code, only the frontend and backend code and nothing else.
   agent: qa_engineer_agent
+  output_file: software_house/src/software_house/agent_output/qa_engineer_agent.py
 
 evaluate_task:
   name: evaluate_task
@@ -88,6 +93,7 @@ evaluate_task:
   expected_output: >
     Your Final answer must be the full frontend and backend code, only the frontend and backend code and nothing else.
   agent: chief_qa_engineer_agent
+  output_file: software_house/src/software_house/agent_output/chief_qa_engineer_agent.py
 
 code_aggregation_task:
   name: code_aggregation_task
@@ -108,3 +114,4 @@ code_aggregation_task:
     The final output must be a structured frontend and backend project, properly documented, 
     with all required steps to execute the project. Output only the structured code and documentation.
   agent: code_aggregator_agent
+  output_file: software_house/src/software_house/agent_output/code_aggregator_agent.py
