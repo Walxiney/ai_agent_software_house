@@ -1,0 +1,102 @@
+# Arquitetura do Software para o Projecto Dropoff Detection System
+
+## 1. Visão Geral da Arquitetura
+
+A arquitetura do Dropoff Detection System foi projetada com foco em escalabilidade, segurança e eficiência, utilizando Python no backend conforme solicitado. A aplicação é dividida em componentes principais: Frontend e Backend, além de integrações com a API da OpenAI. A seguir, será apresentado o diagrama UML que ilustra a estrutura geral do sistema.
+
+## 2. Diagrama UML da Arquitetura do Sistema
+
+```plaintext
++---------------------+      +---------------------+
+|  Frontend (React)   | <--->|   Backend (FastAPI) |
++---------------------+      +---------------------+
+       |      ^                        |
+       |      |                        |
+       |      +------------------------+
+       |                       |
++---------------------+      +---------------------+
+|  OpenAI API        |      |  Banco de Dados     |
+|  (gpt-4o, API)     |      |  (se necessário)    |
++---------------------+      +---------------------+
+```
+
+## 3. Componentes Principais
+
+### 3.1 Frontend
+Utilizaremos React.js para o Desenvolvimento do Frontend, com as seguintes features:
+- **Título**: Botão para expandir/recolher as explicações.
+- **Caixa de texto**: Para insira descrições.
+- **Botão de upload de imagem**: Para carregar uma imagem do local do dropoff.
+- **Visualização de imagem**: Permite a visualização da imagem carregada.
+- **Botão de verificação**: Para rodar a validação.
+- **Mensagem de retorno**: Exibe 'Valid' ou 'Invalid'.
+
+### 3.2 Backend
+Utilizaremos FastAPI, com as seguintes responsabilidades:
+- **Receber dados**: Receber as mensagens de texto e imagens enviadas pelo frontend.
+- **Processar imagens**: Realizar o encoding das imagens usando base64.
+- **Integrar com OpenAI API**: Enviar informações para a API e receber a resposta.
+- **Validar resposta**: Retornar 'Valid' ou 'Invalid' após análise.
+
+### 3.3 OpenAI API
+Integrar a API da OpenAI para utilizar o modelo gpt-4o. O backend, ao receber a descrição e a imagem, construirá um prompt com os parâmetros adequados, como示 de exemplo.
+
+## 4. Padrões e Tecnologias
+
+### 4.1 Padrões de Arquitetura
+- **RESTful API**: A comunicação entre frontend e backend será feita através de requisições HTTP padrão.
+- **Model-View-Controller (MVC)**: A organização do código frontend e backend seguirá o padrão MVC para maior clareza e separação de responsabilidades.
+
+### 4.2 Tecnologias
+- **Frontend**: React.js, JSON, CSS para estilos.
+- **Backend**: Python, FastAPI, OpenAI API.
+- **Banco de Dados**: (Opcional) Dependendo do dimensionamento e necessidade futura de armazenar logs de usuários ou resultados de validação.
+
+## 5. Documentação Requerida
+
+### 5.1 Guia de Instalação e Configuração
+- Instalação das dependências necessárias, configuração do ambiente FastAPI, instalação do React e configuração da API da OpenAI.
+
+```bash
+# Backend
+pip install fastapi uvicorn openai python-dotenv
+
+# Frontend
+npx create-react-app dropoff-detection
+```
+
+### 5.2 API Documentation
+- Documentação detalhada da API, incluindo os endpoints, métodos HTTP (GET, POST), formatos de resposta e exemplos.
+
+### 5.3 Guia do Usuário
+- Um guia passo a passo para usuários finais sobre como interagir com a interface da web.
+
+### 5.4 Estrutura de Pastas e Execução do Código
+```plaintext
+dropoff_detection_system/
+├── backend/
+│   ├── main.py           # Arquivo principal FastAPI
+│   ├── validation.py      # Funções de validação
+│   └── .env              # Variáveis de ambiente
+└── frontend/
+    ├── src/
+    │   ├── App.js        # Componente principal React
+    │   └── components/    # Componentes do React
+    └── public/           # Imagens e estáticos
+```
+
+### Execução do Backend e Frontend
+Para rodar o backend:
+```bash
+uvicorn main:app --reload
+```
+
+Para rodar o frontend:
+```bash
+cd frontend
+npm start
+```
+
+## 6. Conclusão
+
+A arquitetura proposta garante uma aplicação escalável, segura e eficiente que permitirá a validação do dropoff de pacotes de maneira fácil e rápida. Todos os componentes foram estruturados de modo a promover uma manutenção futura de forma eficiente, e esperamos que este documento sirva como um guia abrangente para o desenvolvimento e a implementação do Dropoff Detection System.

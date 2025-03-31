@@ -1,0 +1,141 @@
+# Documentação Técnica Completa do Projeto Dropoff Detection System
+
+## Sumário
+1. [Visão Geral do Projeto](#visão-geral-do-projeto)
+2. [Arquitetura do Software](#arquitetura-do-software)
+   - [Diagrama UML](#diagrama-uml)
+   - [Componentes Principais](#componentes-principais)
+3. [Guia de Instalação e Configuração](#guia-de-instalação-e-configuração)
+4. [Documentação da API](#documentação-da-api)
+5. [Guia do Usuário](#guia-do-usuário)
+6. [Organização de Pastas e Execução do Código](#organização-de-pastas-e-execução-do-código)
+7. [Conclusão](#conclusão)
+
+---
+
+## Visão Geral do Projeto
+
+O **Dropoff Detection System** é uma aplicação web que tem como objetivo validar se um pacote foi entregue no local correto. A aplicação permite que o usuário insira uma descrição do local e carregue uma imagem do mesmo, utilizando um modelo de linguagem para realizar a validação entre eles.
+
+## Arquitetura do Software
+
+### Diagrama UML
+
+```plaintext
++---------------------+      +---------------------+
+|  Frontend (React)   | <--->|   Backend (FastAPI) |
++---------------------+      +---------------------+
+       |      ^                        |
+       |      |                        |
+       |      +------------------------+
+       |                       |
++---------------------+      +---------------------+
+|  OpenAI API        |      |  Banco de Dados     |
+|  (gpt-4o, API)     |      |  (se necessário)    |
++---------------------+      +---------------------+
+```
+
+### Componentes Principais
+
+- **Frontend**:
+  - Criado em **React.js** para interação do usuário.
+  - Caixa de texto para descrição, upload de imagem, visualização da imagem e validação.
+
+- **Backend**:
+  - Construído em **FastAPI** usando Python.
+  - Recebe descrição e imagem, processa e chama a API da OpenAI para validação.
+  
+- **OpenAI API**:
+  - Utiliza o modelo **gpt-4o** para determinar se a descrição e a imagem são compatíveis.
+
+## Guia de Instalação e Configuração
+
+1. **Configurar o Ambiente Backend**:
+   - Instalar as dependências:
+   ```bash
+   pip install fastapi uvicorn openai python-dotenv
+   ```
+
+2. **Configurar o Ambiente Frontend**:
+   - Criar a aplicação React:
+   ```bash
+   npx create-react-app frontend
+   cd frontend
+   ```
+
+3. **Executar o Backend**:
+   - Rodar o servidor FastAPI:
+   ```bash
+   uvicorn main:app --reload
+   ```
+
+4. **Executar o Frontend**:
+   - Iniciar o servidor React:
+   ```bash
+   npm start
+   ```
+
+## Documentação da API
+
+### Endpoint de Validação
+
+- **Método**: POST  
+- **URL**: `/validate/`  
+
+#### Request Body
+```json
+{
+    "description": "A descrição do local onde o pacote foi deixado",
+    "image": "Imagem codificada em base64"
+}
+```
+
+#### Response
+```json
+{
+    "answer": "Valid" ou "Invalid",
+    "reasoning": "Detalhes do raciocínio utilizado para a análise."
+}
+```
+
+## Guia do Usuário
+
+### Passo a Passo para Uso da Aplicação
+
+1. **Acessar a Aplicação**: Abra o navegador e acesse a interface da aplicação.
+2. **Inserir Descrição**: Na caixa de texto, insira a descrição do local onde o pacote foi deixado.
+3. **Carregar Imagem**: Utilize o botão de upload para carregar uma imagem do local.
+4. **Executar Validação**: Clique no botão "Validate" para verificar se a descrição corresponde à imagem carregada.
+5. **Visualizar Resultados**: O resultado será exibido como 'Valid' ou 'Invalid', e você pode clicar em "Show Reasoning" para entender a análise realizada.
+
+## Organização de Pastas e Execução do Código
+
+### Estrutura de Diretórios
+```plaintext
+dropoff_detection_system/
+├── backend/
+│   ├── main.py           # Arquivo principal do FastAPI
+│   ├── validation.py      # Funcionalidades de validação
+│   └── .env              # Variáveis de ambiente
+└── frontend/
+    ├── src/
+    │   ├── App.js        # Componente principal da aplicação React
+    │   └── App.css       # Estilos CSS da aplicação
+    └── public/           # Arquivos estáticos
+```
+
+### Execução
+
+Para rodar o **backend**, execute:
+```bash
+uvicorn main:app --reload
+```
+
+Para rodar o **frontend**, dentro da pasta do frontend:
+```bash
+npm start
+```
+
+## Conclusão
+
+Essa documentação fornece um guia abrangente para o desenvolvimento e uso do Dropoff Detection System. Com a arquitetura bem estruturada e funcionalidades de fácil acesso, o sistema está preparado para atender às necessidades de validação de entrega de pacotes. Esperamos que este projeto proporcione uma experiência de usuário positiva e facilite a validação de dropoffs de forma eficiente.

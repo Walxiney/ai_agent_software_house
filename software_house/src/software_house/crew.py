@@ -58,6 +58,9 @@ class AgentsTasksCrew():
         except FileNotFoundError as e:
             print(f"Error: {e}. Please check the file path for the task_orchestrator.yaml.")
 
+        orchestrator_output = "software_house/src/software_house/orchestrator_output/agent_orchestrator.txt"
+        with open(orchestrator_output, "w", encoding="utf-8") as file:
+            file.write("")
         # AGENTS
         team_selector_agent = Agent(
             config=agent_orchestrator['team_selector_agent'],
@@ -68,7 +71,8 @@ class AgentsTasksCrew():
         # TASKS
         team_selection_task = Task(
             config=task_orchestrator['team_selection_task'],
-            agent=team_selector_agent
+            agent=team_selector_agent,
+            output_file=orchestrator_output
             # output_pydantic=AgentTask
         )
 

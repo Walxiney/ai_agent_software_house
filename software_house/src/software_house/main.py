@@ -65,6 +65,11 @@ class SoftwareHouse(Flow):
 			agent_name = task_details.get('agent')
 			if agent_name in agents_data:
 				agents_tasks[agent_name] = task_name
+				#agents_tasks[f"{agent_name}_and_goal_{task_name}_and_description"] = [{agent_name: agents_data[agent_name].get('goal')}, {task_name:task_details.get('description')}]
+
+		# print("#"*20,"AGENTS AND TASKS", "#"*20)
+		# print(agents_tasks)
+		# print("#"*55)
 
 		if not agents_tasks:
 			print("Error: No matching agents found for the tasks in the YAML files.")
@@ -92,8 +97,15 @@ class SoftwareHouse(Flow):
 		
 		# Combine project information and available agents_tasks
 		input_data = {}
+		output_format = {
+			"template":{
+				"agents_tasks":{"agent_name_1": "task_name_1", "agent_name_2": "task_name_2"},
+			}
+		}
+
 		try:
 			input_data = project_info[0] | agents_tasks_output
+			input_data = input_data | output_format
 		except Exception as e:
 			print(f"Error while combining the project_info[0] and agents_tasks_output: {e}")
 		return input_data
@@ -119,9 +131,10 @@ class SoftwareHouse(Flow):
 
 		try:
 			selected_team_dict = selected_team.raw
-			selected_team_json = json.loads(selected_team_dict.encode('utf-8').decode('utf-8'))
+			selected_team_json = json.loads(selected_team_dict.replace("'","\"").encode('utf-8').decode('utf-8'))
 			print("#"*20,"STAFF SELECTED", "#"*20)
 			print(selected_team_json)
+			print(type(selected_team_json))
 			print("#"*55)
 		except Exception as e:
 			print(f"Error while converting selected_team to JSON: {e}")
