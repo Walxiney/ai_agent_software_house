@@ -1,220 +1,124 @@
-### Backend Code using FastAPI
-
-`backend/main.py`
 ```python
-from fastapi import FastAPI, UploadFile, File
-from fastapi.responses import JSONResponse
-import base64
-import os
-from openai import OpenAI
-from dotenv import load_dotenv
+# Backend: Flask Application
 
-load_dotenv()  # Load environment variables from .env
-openai_client = OpenAI(api_key=os.getenv("OPENAI_KEY"))
+# Install dependencies
+# pip install Flask Flask-Cors SQLAlchemy
 
-app = FastAPI()
+# app.py
+from flask import Flask, jsonify, request
+from flask_cors import CORS
+from flask_sqlalchemy import SQLAlchemy
+import random
 
-@app.post("/validate/")
-async def validate_package(description: str, file: UploadFile = File(...)):
-    # Read the image file
-    image_data = await file.read()
-    
-    # Encode the image to base64
-    image_base64 = base64.b64encode(image_data).decode('utf-8')
-    
-    prompt = [
-        {
-            "role": "system",
-            "content": "You will receive an image as input and a description about a parcel delivered place. Your task is to check if the place where the parcel is in the image matches with the description given by the deliverer."
-        },
-        {
-            "role": "user",
-            "content": [
-                {"type": "text", "text": description},
-                {
-                    "type": "image_url",
-                    "image_url": {"url": f"data:image/jpeg;base64,{image_base64}"}
-                }
-            ]
-        }
-    ]
-    
-    # Call OpenAI API
-    response = openai_client.chat.completions.create(
-        model="gpt-4o",
-        messages=prompt,
-        response_format={"type": "json_object"}
-    )
-    
-    return JSONResponse(content=response['choices'][0]['message'])
+app = Flask(__name__)
+CORS(app)
 
+# Database setup
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///pacman.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
+
+# Database models
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    score = db.Column(db.Integer, default=0)
+    level = db.Column(db.Integer, default=1)
+
+class Game(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    game_data = db.Column(db.Text)
+
+# Game state
+class GameState:
+    def __init__(self):
+        self.pacman = {'x': 1, 'y': 1, 'lives': 3, 'score': 0}
+        self.ghosts = [{'x': 5, 'y': 5, 'state': 'Chase'}]
+        self.maze = [[0 for _ in range(10)] for _ in range(10)]  # Placeholder for the maze
+
+    def update(self):
+        self.move_ghosts()
+        # Additional game logic here (collisions, scoring, etc.)
+
+    def move_ghosts(self):
+        for ghost in self.ghosts:
+            ghost['x'] += random.choice([-1, 0, 1])
+            ghost['y'] += random.choice([-1, 0, 1])
+
+game_state = GameState()
+
+@app.route('/start', methods=['POST'])
+def start_game():
+    game_state.__init__()  # Reset the game state
+    return jsonify(game_state.__dict__)
+
+@app.route('/update', methods=['POST'])
+def update_game():
+    game_state.update()
+    return jsonify(game_state.__dict__)
+
+@app.route('/score', methods=['POST'])
+def save_score():
+    data = request.json
+    new_user = User(score=data['score'], level=data['level'])
+    db.session.add(new_user)
+    db.session.commit()
+    return jsonify(id=new_user.id)
+
+if __name__ == '__main__':
+    db.create_all()
+    app.run(debug=True)
 ```
 
-### Frontend Code using React
-
-`frontend/src/App.js`
 ```javascript
-import React, { useState } from 'react';
-import './App.css';
+// Frontend: React Application
 
-function App() {
-  const [description, setDescription] = useState('');
-  const [imageFile, setImageFile] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
-  const [validationResult, setValidationResult] = useState('');
-  const [reasoning, setReasoning] = useState('');
-  const [showReasoning, setShowReasoning] = useState(false);
+// Install dependencies
+// npx create-react-app pacman-frontend
+// cd pacman-frontend
+// npm install axios
 
-  const handleImageUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setImageFile(file);
-      setImagePreview(URL.createObjectURL(file));
-    }
-  };
+// src/App.js
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
-  const handleValidation = async () => {
-    const formData = new FormData();
-    formData.append('description', description);
-    formData.append('file', imageFile);
+const App = () => {
+    const [gameData, setGameData] = useState(null);
+    const [score, setScore] = useState(0);
+    const [level, setLevel] = useState(1);
 
-    const response = await fetch('http://localhost:8000/validate/', {
-      method: 'POST',
-      body: formData
-    });
+    useEffect(() => {
+        startGame();
+    }, []);
 
-    const data = await response.json();
-    if (data.answer) {
-      setValidationResult(data.answer);
-      setReasoning(data.reasoning);
-    }
-  };
+    const startGame = async () => {
+        const response = await axios.post('http://localhost:5000/start');
+        setGameData(response.data);
+    };
 
-  return (
-    <div className="App">
-      <h1>Dropoff Detection System</h1>
-      <input
-        type="text"
-        value={description}
-        onChange={e => setDescription(e.target.value)}
-        placeholder="Enter location description"
-      />
-      <input type="file" accept=".png,.jpg,.jpeg,.webp" onChange={handleImageUpload} />
-      {imagePreview && (
+    const updateGame = async () => {
+        const response = await axios.post('http://localhost:5000/update');
+        setGameData(response.data);
+    };
+
+    const saveScore = async () => {
+        await axios.post('http://localhost:5000/score', { score: score, level: level });
+    };
+
+    return (
         <div>
-          <img src={imagePreview} alt="Preview" style={{ width: '300px', height: 'auto' }} />
+            <h1>Pacman Game</h1>
+            {gameData && (
+                <div>
+                    <h2>Score: {gameData.pacman.score}</h2>
+                    <p>Lives: {gameData.pacman.lives}</p>
+                    <button onClick={updateGame}>Update Game</button>
+                    <button onClick={saveScore}>Save Score</button>
+                </div>
+            )}
         </div>
-      )}
-      <button onClick={handleValidation}>Validate Dropoff</button>
-      {validationResult && <h2>{validationResult}</h2>}
-      {validationResult &&
-        <div>
-          <button onClick={() => setShowReasoning(!showReasoning)}>
-            {showReasoning ? 'Hide Reasoning' : 'Show Reasoning'}
-          </button>
-          {showReasoning && <p>{reasoning}</p>}
-        </div>
-      }
-    </div>
-  );
-}
+    );
+};
 
 export default App;
 ```
-
-`frontend/src/App.css`
-```css
-.App {
-  text-align: center;
-  margin: 20px;
-}
-
-input[type="text"], input[type="file"] {
-  margin: 10px;
-  padding: 10px;
-  width: 300px;
-}
-
-img {
-  margin-top: 10px;
-  border: 1px solid #ccc;
-}
-
-button {
-  margin-top: 10px;
-  padding: 10px 20px;
-}
-```
-
-### Installation Instructions
-
-1. **Backend Setup:**
-   - Ensure you have Python and pip installed.
-   - Create a virtual environment and activate it:
-     ```bash
-     python -m venv venv
-     source venv/bin/activate  # On Windows use `venv\Scripts\activate`
-     ```
-   - Install the required packages:
-     ```bash
-     pip install fastapi uvicorn openai python-dotenv
-     ```
-   - Create a `.env` file in the `backend` directory with your OpenAI API key:
-     ```
-     OPENAI_KEY=your_openai_api_key_here
-     ```
-   - Run the backend server:
-     ```bash
-     uvicorn main:app --reload
-     ```
-
-2. **Frontend Setup:**
-   - Ensure you have Node.js and npm installed.
-   - Navigate to the `frontend` directory and install dependencies:
-     ```bash
-     npm install
-     ```
-   - Start the frontend server:
-     ```bash
-     npm start
-     ```
-
-### API Documentation
-
-- **POST /validate/**
-  - **Description**: Validates the package drop-off by comparing the description with the uploaded image.
-  - **Request Body**: Form-data with `description` (string) and `file` (image).
-  - **Response**:
-    ```json
-    {
-      "answer": "Valid" or "Invalid",
-      "reasoning": "Explanation of the validation result"
-    }
-    ```
-  
-### User Guide for Web Interface
-
-- Open the application in your browser at `http://localhost:3000`.
-- Enter a description of the drop-off location in the text field.
-- Upload an image of where you believe the package was delivered.
-- Click "Validate Dropoff" to receive feedback on whether the package was validated as "Valid" or "Invalid".
-- You can toggle the reasoning for the result to better understand the validation output. 
-
-### Folder Structure
-
-```
-DropoffDetectionSystem/
-├── backend/
-│   ├── main.py
-│   ├── .env
-│   └── requirements.txt
-├── frontend/
-│   ├── src/
-│   │   ├── App.js
-│   │   └── App.css
-│   ├── public/
-│   └── package.json
-└── README.md
-```
-
-This implementation provides a comprehensive Dropoff Detection System that allows users to input delivery descriptions and validate them against images using OpenAI's capabilities, ensuring a satisfactory experience.

@@ -2,31 +2,35 @@
 define_requirements:
   name: define_requirements
   description: >
-    Coletar e organizar os requisitos do projeto {project_name}. Isso inclui entender as necessidades do negócio, 
-    documentar funcionalidades e criar histórias de usuário detalhadas. O backlog deve ser priorizado com base 
-    no impacto e urgência do cliente.
+    Coletar e estruturar os requisitos do projeto "{project_name}", analisando profundamente as necessidades do negócio e objetivos estratégicos.  
+    Criar um backlog priorizado com user stories claras e bem definidas, garantindo alinhamento com as expectativas do cliente.  
+    Definir critérios de aceitação que facilitem a validação do produto final.  
 
     Descrição do projeto:
     {project_description}
 
   expected_output: >
-    Um backlog detalhado com requisitos bem definidos, incluindo user stories, critérios de aceitação e 
-    uma visão geral do escopo do projeto.
+    - Um backlog detalhado contendo user stories organizadas por prioridade.  
+    - Critérios de aceitação bem definidos para cada funcionalidade.  
+    - Lista de requisitos técnicos e não técnicos essenciais para o projeto.  
   agent: product_owner
   output_file: software_house/src/software_house/agent_output/product_owner.md
 
 design_architecture:
   name: design_architecture
   description: >
-    Criar a arquitetura do software para o projeto {project_name}, incluindo definição de padrões, escolha de tecnologias e estruturação dos 
-    componentes principais. Deve garantir escalabilidade, segurança e eficiência.
-    Priorizando uso da linguagem Python no backend quando não houver linguagem especificada na descrição do projeto.
+    Criar a arquitetura do software para o projeto "{project_name}", garantindo modularidade, escalabilidade e segurança.  
+    Definir padrões de desenvolvimento, tecnologias recomendadas e estrutura dos componentes principais.  
+    O backend deve ser priorizado em Python, caso a linguagem não esteja especificada na descrição do projeto.  
 
     Descrição do projeto:
     {project_description}
 
   expected_output: >
-    Um documento detalhado de arquitetura contendo diagramas UML, decisões técnicas justificadas e padrões adotados.
+    - Documento detalhado da arquitetura do sistema com diagramas UML.  
+    - Definição clara de camadas (frontend, backend, banco de dados, APIs, segurança).  
+    - Justificativa das escolhas tecnológicas e padrões adotados.  
+    - Plano para comunicação eficiente entre componentes e fluxo de dados.  
   agent: software_architect
   output_file: software_house/src/software_house/agent_output/software_architect.md
 
@@ -114,4 +118,4 @@ code_aggregation_task:
     The final output must be a structured frontend and backend project, properly documented, 
     with all required steps to execute the project. Output only the structured code and documentation.
   agent: code_aggregator_agent
-  output_file: software_house/src/software_house/agent_output/code_aggregator_agent.py
+  output_file: software_house/src/software_house/agent_output/code_aggregator_agent.md

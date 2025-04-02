@@ -1,143 +1,99 @@
-### Arquitetura do Sistema Dropoff Detection System
+# Arquitetura do Software para o Projeto "Pacman"
 
-#### Visão Geral
-O "Dropoff Detection System" é uma aplicação web que valida a entrega de pacotes com base na comparação entre a descrição do local fornecida pelo usuário e a imagem do local onde o pacote foi deixado. A arquitetura será dividida em dois componentes principais: Frontend e Backend. 
+## Visão Geral
 
----
+A arquitetura do software para o jogo "Pacman" será composta por um sistema modular e escalável, que separa as responsabilidades em diferentes camadas: frontend, backend, e banco de dados. Esta abordagem permite um desenvolvimento mais contínuo e organizado, além de facilitar a manutenção e a escalabilidade.
 
-### Diagrama de Arquitetura
+### Camadas
 
-```plaintext
-+-------------------+                   +----------------------+                   +----------------+
-|                   |                   |                      |                   |                |
-|  Frontend (UI)    | <---------------- |    FastAPI API      | <---------------- |  OpenAI API    |
-|                   |    HTTP Requests   |                      |   API Calls       |                |
-+-------------------+                   +----------------------+                   +----------------+
-            |                                           ^
-            |                                           |
-            |                                           |
-            |                                           |
-            |                                           |
-            V                                           |
-+-------------------+                                   |
-|                   |                                   |
-|  User Input Form  |                                   |
-|                   |                                   |
-+-------------------+                                   |
-            |                                           |
-            +-------------------------------------------+
-            | |                                        |
-            | | Canvas for Image Preview               |
-            | |                                        |
-            | +------------------------------------+   |
-            |                                            |
-            |                                            |
-+---------------------+         +-------------------+  |
-|  Validation Result   |         |   Reasoning (LLM) |  |
-+---------------------+         +-------------------+  |
-```
+1. **Frontend**:
+    - **Tecnologia**: React.js (ou similar)
+    - **Função**: Responsável pela interface gráfica com o usuário. Utiliza a biblioteca React para construir uma UI interativa e responsiva, permitindo que o jogador veja o labirinto e controle Pac-Man.
+    - **Módulos**:
+        - Tela de Inicialização
+        - Labirinto/Layout
+        - Pontuação
+        - Game Over
 
----
+2. **Backend**:
+    - **Tecnologia**: Python com Flask ou FastAPI
+    - **Função**: Lida com a lógica do jogo, gerenciamento de estado, e comunicação com o frontend. Este será responsável pelo gerenciamento de estados de Pac-Man e fantasmas, detecção de colisão, e progressão de níveis.
+    - **Módulos**:
+        - Gerenciamento de Jogo (estado, pontuação, vidas)
+        - Comportamento dos Fantasmas
+        - Conexão com Banco de Dados
+        - API REST para comunicação com o frontend
 
-### Componentes Principais
+3. **Banco de Dados**:
+    - **Tecnologia**: SQLite ou PostgreSQL
+    - **Função**: Armazena dados relacionados a pontuações, níveis e perfis de jogadores (se necessário).
+    - **Estrutura**:
+        - Tabela de Usuários (id, score, level, etc.)
+        - Tabela de Partidas (id, user_id, game_data, etc.)
 
-#### Frontend
-- **Tecnologias**: HTML, CSS, JavaScript (Framework: React ou Vue.js)
-- **Quebras de Responsabilidades**: O componente frontend é responsável pela coleta de dados do usuário, incluindo a descrição e a imagem do local. Ele enviará esses dados ao backend e exibirá o resultado da validação.
-- **Principais Funcionalidades**:
-    1. Título do aplicativo.
-    2. Caixa de texto para descrição.
-    3. Implementação de upload de imagem.
-    4. Visualização da imagem carregada (toggle).
-    5. Botão para iniciar a verificação.
-    6. Mensagem indicando "Valid" ou "Invalid".
-    7. Seção para expandir/recolher a explicação do LLM.
+### Diagramas UML
 
-#### Backend
-- **Tecnologia**: Python com FastAPI
-- **Estrutura Modularizada**:
-    1. **Endpoints**:
-        - `/upload` (POST): Recebe descrição e imagem.
-        - `/validate` (POST): Envia request ao OpenAI e retorna resposta.
-    2. **Funções Principais**:
-        - Resgatar e validar entrada do usuário.
-        - Codificar imagem em base64.
-        - Estruturar e enviar o prompt para a OpenAI API.
-        - Tratar a resposta e retornar ao frontend.
-  
-- **Código de Exemplo para a Função de Validação**:
+1. **Diagrama de Casos de Uso**
 
-```python
-from fastapi import FastAPI, UploadFile, File
-from fastapi.responses import JSONResponse
-import base64
-import os
-from openai import OpenAI
+   ```plaintext
+   +-----------------------+
+   |       Jogador         |
+   +-----------------------+
+              |
+              | inicia jogo
+              v
+   +-----------------------+
+   |      Jogo            |
+   +-----------------------+
+   | -Inicio              |
+   | -Game Loop           |
+   | -Detectar Colisão    |
+   | -Gerenciar Estado     |
+   +-----------------------+
+   ```
 
-app = FastAPI()
-openai_client = OpenAI(api_key=os.getenv("OPENAI_KEY"))
+2. **Diagrama de Classes**
 
-@app.post("/validate/")
-async def validate_package(description: str, file: UploadFile = File(...)):
-    # Enviar imagem para o servidor
-    image_data = await file.read()
-    
-    # Codificar imagem em base64
-    image_base64 = base64.b64encode(image_data).decode('utf-8')
-    
-    prompt = [
-        {
-            "role": "system",
-            "content": "You will receive an image as input and a description about a parcel delivered place..."
-        },
-        {
-            "role": "user",
-            "content": [
-                {"type": "text", "text": description},
-                {
-                    "type": "image_url",
-                    "image_url": {"url": f"data:image/jpeg;base64,{image_base64}"}
-                }
-            ]
-        }
-    ]
-    
-    response = openai_client.chat.completions.create(
-        model="gpt-4o",
-        messages=prompt,
-        response_format={"type": "json_object"}
-    )
-    
-    return JSONResponse(content=response)
+   ```plaintext
+   +-----------------------+          +-----------------------+
+   |       PacMan         |<---------|      Ghost            |
+   +-----------------------+          +-----------------------+
+   | -x: int              |          | -x: int              |
+   | -y: int              |<---------| -y: int              |
+   | -lives: int          |          | -state: String       |
+   | -score: int          |          +-----------------------+
+   | +move()              |          | +move()              | 
+   | +eatPellet()         |          | +updateBehavior()     |
+   +-----------------------+          +-----------------------+
+   ```
 
-```
+3. **Diagrama de Sequência**
 
----
+   ```plaintext
+   Jogador -> Frontend: Iniciar Jogo
+   Frontend -> Backend: Carregar Estado
+   Backend -> Banco de Dados: Recuperar Dados
+   Banco de Dados -> Backend: Dados do Jogo
+   Backend -> Frontend: Enviar Estado Atual
+   Frontend -> Jogador: Exibir Jogo
+   ```
 
-### Padrões e Melhores Práticas
-- **Segurança**: Uso de HTTPS, validação de entrada de usuários, armazenamento seguro das credenciais da API via variáveis de ambiente.
-- **Escalabilidade**: Uso de arquitetura em microserviços para facilitar a adição de novos recursos no futuro e separação de preocupações.
-- **Documentação**:
-    1. **Guia de Instalação e Configuração**: Passo a passo detalhando a configuração do ambiente, com ênfase nas dependências do FastAPI e OpenAI API.
-    2. **Documentação da API**: Descrição dos endpoints, parâmetros e exemplos de requisições e respostas.
-    3. **Guia do Usuário**: Instruções sobre como inserir dados e entender o resultado da aplicação.
-    4. **Estrutura de Pastas**:
-    ```
-    DropoffDetectionSystem/
-    ├── backend/
-    │   ├── main.py
-    │   ├── api/
-    │   ├── utils/
-    │   └── requirements.txt
-    ├── frontend/
-    │   ├── public/
-    │   ├── src/
-    │   └── package.json
-    ├── docs/
-    │   ├── api_documentation.md
-    │   └── user_guide.md
-    └── README.md
-    ```
+### Justificativa das Escolhas Tecnológicas e Padrões Adotados
 
-### Conclusão
-A arquitetura proposta para o sistema Dropoff Detection visa garantir escalabilidade, segurança e eficiência, utilizando tecnologias modernas e boas práticas de programação. A divisão clara entre o frontend e o backend não apenas facilita o desenvolvimento, mas também a manutenção futura do sistema. Com documentação abrangente, este sistema estará preparado para atender as necessidades dos usuários e se adaptar às solicitações futuras.
+- **React.js** no frontend foi escolhido pelas suas capacidades de construir interfaces dinâmicas de forma eficiente e reutilizável.
+- **Python** como linguagem backend foi escolhido pela sua simplicidade e pelo suporte a frameworks robustos como Flask e FastAPI, que facilitam a construção de APIs RESTful.
+- **SQLite** ou **PostgreSQL** são escolhas adequadas para o banco de dados, fornecendo robustez e desempenho, além de eliminar a complexidade de configuração.
+
+### Plano para Comunicação Eficiente entre Componentes e Fluxo de Dados
+
+- **APIs RESTful** serão utilizadas para permitir a comunicação entre o frontend e o backend. O backend irá fornecer endpoints para iniciar o jogo, recuperar o estado do jogo, e atualizar a pontuação.
+- **Websockets** podem ser considerados para uma comunicação em tempo real, especialmente se futuramente decidirmos incluir modos multiplayer.
+
+### Estrutura de Dados para o Jogo
+
+- O labirinto é representado por uma matriz bidimensional. Cada célula contém informações sobre o tipo de tile (parede, pellet, power pellet, etc.).
+- Os estados de Pac-Man e dos fantasmas serão geridos por um sistema de gerenciamento centralizado, utilizando um padrão de projeto de estado, permitindo transitions entre os diferentes modos (Chase, Scatter, Frightened).
+
+## Conclusão
+
+A arquitetura proposta oferece uma solução robusta para o desenvolvimento do jogo "Pacman", atendendo aos requisitos funcionais e não funcionais estabelecidos, enquanto garante modularidade, escalabilidade e segurança. A divisão clara entre as camadas facilita o fluxo de dados e a manutenção do sistema, permitindo um desenvolvimento ágil e eficiente.

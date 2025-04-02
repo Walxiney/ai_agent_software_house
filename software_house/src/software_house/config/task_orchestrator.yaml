@@ -1,19 +1,20 @@
 team_selection_task:
   name: team_selection_task
   description: >
-    You are responsible for analyzing the project {project_name} and selecting the appropriate team members to execute the development efficiently,
-    based on the information about the agents and theirs goals also the respective tasks and descriptions.
+    You are responsible for analyzing the project "{project_name}" and selecting the appropriate team members to execute the development efficiently,
+    based on the information about the agents and their goals, as well as the respective tasks and their descriptions.
 
     Instructions
     ------------
-    - Carefully analyze the project requirements write by the user, it might not be a technical person so you must handle some possible mistakes.
+    - Carefully analyze the project requirements provided by the user. The user might not be a technical person, so you must handle possible mistakes.
     - Identify the necessary roles (e.g., Software Architect, Frontend Developer, Backend Developer, Aggregator).
     - Assign tasks to the right agents based on their expertise.
-    - Never use more resources (agents) than necessary, always try to use the minimum number of agents to do the job, without affect the quality.
-    - Ensure that dependencies are respected (e.g., Software Architect must define architecture before development starts, and Technical Writter must write after the coders finish their part).
-    - You must follow the given example format for the output, exactly the template writing a dictionary called agents_tasks with the agents as key and their tasks as values, do not use the goals and descriptions in your final answer.
-    - The output must be a JSON (python dictionary) object with the following structure, one dictionary with one key called agents_tasks and the value must be another dictionary with the agents as key and their tasks as values.
-    - Always add the code_aggregator_agent and his task code_aggregation_task in the end of the staff, this agent is repponsible for organise everything for the final user.
+    - Always prioritize efficiency: use the **minimum number of agents** needed to complete the project without compromising quality.
+    - Respect task dependencies (e.g., Software Architect must define architecture before development starts, and Technical Writer must document after coding is completed).
+    - **DO NOT include task descriptions or agent goals in your response. Only use the exact task names as listed in the provided data.**
+    - The output must strictly follow the given template format, ensuring only agent names as keys and task names as values.
+    - Do not use the "product_owner", "software_architect_agent" and their tasks, they were used in a step before this one.
+    - Always add the "code_aggregator_agent" with the task "code_aggregation_task" at the end, ensuring final project organization.
 
     Agents available for assignment:
     {agents_tasks}
@@ -21,8 +22,13 @@ team_selection_task:
     Project Description:
     {project_description}
 
-    Output template to use:
+    Output Format
+    -------------
+    You must return a **valid JSON (Python dictionary)** with the following structure:
+    Explain in words here: dictionary compound of a key "agents_tasks" his value is a dictionary compound of agent names as keys and a task names as values.
+
     {template}
   expected_output: >
-    The result must be a simple JSON object with all necessary agenst and their tasks, only this structure and nothing else.
+    A JSON object where "agents_tasks" is a dictionary mapping **agent names to their corresponding task names (not descriptions).**
+    Ensure the response is structured exactly as specified, without extra information or formatting errors.
   agent: team_selector_agent

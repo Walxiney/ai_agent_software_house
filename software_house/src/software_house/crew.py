@@ -34,7 +34,7 @@ class AgentsTasksCrew():
 
         return configs
     
-    def create_project_structure(base_path="MySoftwareProject"):
+    def create_project_structure(self, base_path="MySoftwareProject"):
         structure = {
             "src": ["backend", "frontend", "data", "utils"],
             "docs": [],
@@ -43,14 +43,86 @@ class AgentsTasksCrew():
             "scripts": [],
             "deploy": [],
         }
-
-        for folder, subfolders in structure.items():
-            folder_path = os.path.join(base_path, folder)
-            os.makedirs(folder_path, exist_ok=True)
-            for sub in subfolders:
-                os.makedirs(os.path.join(folder_path, sub), exist_ok=True)
+        try:
+            for folder, subfolders in structure.items():
+                folder_path = os.path.join(base_path, folder)
+                os.makedirs(folder_path, exist_ok=True)
+                for sub in subfolders:
+                    os.makedirs(os.path.join(folder_path, sub), exist_ok=True)
         
-        print(f"Directory structure for '{base_path}' created successfully.")
+            print(f"Directory structure for '{base_path}' created successfully.")
+        except Exception as e:
+            print(f"Error while running create_project_structure: {e}")
+
+    def crew_architeture(self)-> Crew:
+        """
+        Create the crew architeture.
+        This method dynamically creates agents and tasks based on the provided team configuration.
+        - input: None
+        - output: Crew object
+        """
+
+        try:
+            # Creating the project structure
+            self.create_project_structure()
+        except Exception as e:
+            print(f"Error on create_project_structure: {e}")
+
+        # Load configurations from YAML files
+        configs = self.read_agents_tasks()
+
+        # Assign loaded configurations to specific variables
+        agents_config = configs['agents']
+        tasks_config = configs['tasks']
+
+        model_to_use = "gpt-4o-mini"
+
+        drawing_architecture = {
+            "product_owner":"define_requirements",
+            "software_architect":"design_architecture"
+        }
+
+        try:
+            # Dynamically create agents based on the team
+            agents = {}
+            for agent_key in agents_config.keys():
+                if agent_key in drawing_architecture.keys():
+                    agents[agent_key] = Agent(
+                        config=agents_config[agent_key],
+                        llm=model_to_use,
+                        verbose=True
+                    )
+        except Exception as e:
+            print(f"Error while creating agents: {e}")
+
+        try:
+            # Dynamically create tasks based on the agents
+            tasks = []
+
+            for agent_key, task_key in drawing_architecture.items():
+                if agent_key in agents and task_key in tasks_config:
+                    task = Task(
+                        config=tasks_config[task_key],
+                        agent=agents[agent_key],
+                        context=None,  # Initialize context as None
+                    )
+                    tasks.append(task)
+
+                    t = len(tasks)
+                    # Set the context for the code aggregation task
+                    if task_key == "design_architecture" and t == 2:
+                        tasks[1].context = [tasks[0]]
+                    
+        except Exception as e:
+            print(f"Error while creating tasks: {e}")
+
+        # Return the dynamically created crew
+        return Crew(
+            agents=list(agents.values()),
+            tasks=tasks,
+            process= Process.sequential, #Process.hierarchical,
+            verbose=True
+        )
 
     def crew_orchestrator(self)-> Crew:
         """
@@ -100,18 +172,13 @@ class AgentsTasksCrew():
             verbose=True
         )
 
-    def creating_crew_dev(self, team, folder_name)-> Crew:
+    def creating_crew_dev(self, team)-> Crew:
         """
         Create the crew for the project.
         This method dynamically creates agents and tasks based on the provided team configuration.
         - input: team (dict) - Dictionary containing the team configuration
         - output: Crew object
         """
-        try:
-            # Creating the project structure
-            self.create_project_structure()
-        except Exception as e:
-            print(f"Error on create_project_structure: {e}")
 
         # Load configurations from YAML files
         configs = self.read_agents_tasks()
