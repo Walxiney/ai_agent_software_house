@@ -1,1 +1,1 @@
-{'agents_tasks': {'fullstack_engineer_agent': 'code_task', 'qa_engineer_agent': 'review_task', 'chief_qa_engineer_agent': 'evaluate_task', 'code_aggregator_agent': 'code_aggregation_task'}}
+{'agents_tasks': {'fullstack_engineer': 'code_task', 'chief_qa_engineer': 'evaluate_task', 'code_aggregator_agent': 'code_aggregation_task'}}

@@ -1,71 +1,95 @@
-**Backlog Detalhado com User Stories Organizadas por Prioridade:**
+### Pac-Man Project Backlog
 
-1. **User Story: Game Initialization**
-   - Como um jogador, eu quero iniciar o jogo para que possa começar a jogar.
-   - **Critérios de Aceitação:**
-     - O jogo deve carregar e exibir a tela inicial.
-     - O jogador deve ter a opção de iniciar um novo jogo.
-     - O jogo deve iniciar com 3 vidas.
+#### User Stories (Prioritized)
 
-2. **User Story: Maze Layout**
-   - Como um jogador, eu quero ver o layout do labirinto para navegar por ele.
-   - **Critérios de Aceitação:**
-     - O labirinto deve ser visível com paredes e corredores definidos.
-     - Pellets e Power Pellets devem ser distribuídos pelo labirinto.
+1. **User Story 1: Pac-Man Movement Control**
+   - **Como** jogador, 
+   - **Quero** controlar os movimentos de Pac-Man usando as teclas de seta (ou WASD), 
+   - **Para que** eu possa navegar pelo labirinto e coletar pellets.
 
-3. **User Story: Player Controls**
-   - Como um jogador, eu quero controlar Pac-Man com as teclas de seta para mover Pac-Man no labirinto.
-   - **Critérios de Aceitação:**
-     - Pac-Man deve se mover na direção correspondente a cada tecla pressionada.
-     - Pac-Man não pode parar ou atravessar paredes.
+   **Critérios de Aceitação:**
+   - Pac-Man deve responder instantaneamente às entradas do teclado.
+   - Pac-Man deve se mover em quadrados discretos conforme a grade do labirinto.
+   - O movimento deve ser contínuo até o jogador alterar a direção ou encontrar uma parede.
 
-4. **User Story: Pellet Collection**
-   - Como um jogador, eu quero coletar pellets e Power Pellets para marcar pontos.
-   - **Critérios de Aceitação:**
-     - Pac-Man deve "comer" pellets ao passar por cima deles.
-     - Os pontos devem ser adicionados corretamente ao placar.
+2. **User Story 2: Coleta de Pellets**
+   - **Como** jogador,
+   - **Quero** que os pellets desapareçam ao serem coletados,
+   - **Para que** eu possa aumentar minha pontuação.
 
-5. **User Story: Ghost Behavior**
-   - Como um jogador, eu quero que os fantasmas persigam Pac-Man de acordo com seus padrões específicos.
-   - **Critérios de Aceitação:**
-     - Fantasmas devem se mover de acordo com seus modos (Chase, Scatter, Frightened).
-     - Os fantasmas devem retornar ao modo Chase após acabarem o modo Frightened.
+   **Critérios de Aceitação:**
+   - Ao mover-se para uma tile com um pellet, o pellet deve desaparecer.
+   - A pontuação do jogador deve aumentar em 10 pontos após a coleta de cada pellet.
 
-6. **User Story: Game Over Conditions**
-   - Como um jogador, eu quero que o jogo termine quando Pac-Man perder todas suas vidas.
-   - **Critérios de Aceitação:**
-     - A tela de Game Over deve ser exibida quando Pac-Man perder todas as vidas.
-     - A pontuação final deve ser mostrada.
+3. **User Story 3: Coleta de Power Pellets**
+   - **Como** jogador,
+   - **Quero** que Pac-Man possa coletar Power Pellets para mudar o estado dos fantasmas,
+   - **Para que** eu possa ganhar a capacidade de comer fantasmas.
 
-7. **User Story: Level Progression**
-   - Como um jogador, eu quero avançar para níveis mais difíceis ao limpar os pellets do labirinto.
-   - **Critérios de Aceitação:**
-     - Ao coletar todos os pellets, o jogo deve enviar o jogador para o próximo nível.
-     - Os fantasmas devem aumentar de velocidade a cada novo nível.
+   **Critérios de Aceitação:**
+   - Power Pellets devem estar localizados nos quatro cantos do labirinto.
+   - Ao coletar um Power Pellet, os fantasmas devem ficar azuis por 7-10 segundos.
 
-8. **User Story: Warp Tunnels**
-   - Como um jogador, eu quero usar os túneis de transporte para me mover rapidamente pelo labirinto.
-   - **Critérios de Aceitação:**
-     - Pac-Man deve aparecer instantaneamente no lado oposto do labirinto ao entrar nos túneis.
-     - Fantasmas também devem interagir corretamente com os túneis.
+4. **User Story 4: Comportamento dos Fantasmas**
+   - **Como** jogador,
+   - **Quero** que os fantasmas tenham comportamentos diferentes,
+   - **Para que** a experiência de jogo seja desafiadora e divertida.
 
----
+   **Critérios de Aceitação:**
+   - Blinky deve sempre perseguir Pac-Man.
+   - Pinky deve tentar atacar quatro tiles à frente de Pac-Man.
+   - Inky deve usar uma combinação da posição de Pac-Man e Blinky para determinar seu alvo.
+   - Clyde deve alternar entre perseguir Pac-Man e vagar aleatoriamente.
 
-**Requisitos Técnicos e Não Técnicos Essenciais para o Projeto:**
+5. **User Story 5: Sistema de Pontuação**
+   - **Como** jogador,
+   - **Quero** ver minhas pontuações aumentarem por várias ações,
+   - **Para que** eu possa acompanhar meu desempenho no jogo.
 
-**Requisitos Técnicos:**
-1. Sistema de gerenciamento de estado para Pac-Man e fantasmas.
-2. Algoritmos de pathfinding para comportamento dos fantasmas.
-3. Sistema de detecção de colisão para movimentos de personagens e coleta de itens.
-4. Sistema de pontuação e rastreamento de vidas.
-5. Estrutura de dados para armazenamento do layout do labirinto e recursos.
-6. Design responsivo para compatibilidade com diferentes tamanhos de tela e dispositivos.
+   **Critérios de Aceitação:**
+   - A pontuação deve ser aumentada em 50 pontos ao coletar um Power Pellet.
+   - A pontuação deve ser aumentada conforme as regras de comer fantasmas em estado aterrorizado.
 
-**Requisitos Não Técnicos:**
-1. Game Design Document para descrever a mecânica do jogo, arte e sons.
-2. Testes de usabilidade para garantir uma boa experiência do jogador.
-3. Documentação do código para facilitar a manutenção futura.
-4. Planos de marketing e estratégia de lançamento.
-5. Suporte contínuo e atualizações após o lançamento para resolução de bugs e adição de conteúdo.
+6. **User Story 6: Ciclo de Vida de Pac-Man**
+   - **Como** jogador,
+   - **Quero** ter um número limitado de vidas,
+   - **Para que** eu possa sentir a pressão durante o jogo.
 
-Esta estrutura garantirá que as necessidades do cliente sejam atendidas e que o desenvolvimento do projeto "Pacman" siga um caminho claro e bem documentado.
+   **Critérios de Aceitação:**
+   - O jogador deve começar com 3 vidas.
+   - O jogo deve terminar quando todas as vidas forem perdidas.
+
+7. **User Story 7: Progresso de Níveis**
+   - **Como** jogador,
+   - **Quero** progredir para níveis mais difíceis,
+   - **Para que** o jogo permaneça desafiador.
+
+   **Critérios de Aceitação:**
+   - O próximo nível deve ser acessível ao comer todos os pellets e Power Pellets de um nível.
+   - A velocidade dos fantasmas deve aumentar com cada nível.
+
+8. **User Story 8: Túnel de Warp**
+   - **Como** jogador,
+   - **Quero** usar túneis de warp para viajar rapidamente no labirinto,
+   - **Para que** eu possa escapar facilmente dos fantasmas.
+
+   **Critérios de Aceitação:**
+   - Pac-Man e os fantasmas devem reaparecer no lado oposto do labirinto ao usar os túneis.
+
+### Requisitos Técnicos e Não Técnicos
+
+#### Requisitos Técnicos
+1. O jogo deve ser desenvolvido utilizando uma ferramenta de desenvolvimento de jogos (ex: Unity, Godot).
+2. Deve haver uma lógica de detecção de colisão entre Pac-Man, fantasmas, pellets, e paredes.
+3. Implementação de um algoritmo de pathfinding para comportamento dos fantasmas.
+4. Sistema de gerenciamento de estados para Pac-Man e fantasmas (normal, aterrorizado, chase, e scatter).
+5. Controle de temporização para o movimento de Pac-Man e fantasmas em intervalos regulares.
+
+#### Requisitos Não Técnicos
+1. O design do jogo deve ser intuitivo e fácil de entender para novos jogadores.
+2. O jogo deve ter uma apresentação gráfica agradável e bem finalizada.
+3. As regras do jogo devem ser claramente explicadas na tela inicial ou em um tutorial.
+4. O jogo deve ser testado para garantir a jogabilidade em diferentes dispositivos e resoluções de tela.
+
+### Considerações Finais
+Este backlog e os requisitos delineados garantem que o projeto "Pac-Man" esteja alinhado com as expectativas dos stakeholders e que cada funcionalidade esteja claramente definida. O foco em user stories permite que a equipe de desenvolvimento entenda as necessidades do usuário enquanto estabelece critérios de aceitação que facilitam a validação do produto final.

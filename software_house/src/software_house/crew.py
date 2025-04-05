@@ -2,6 +2,13 @@ from crewai import Agent, Crew, Process, Task
 import yaml
 import os
 
+from typing import Optional
+from pydantic import BaseModel
+
+class CodeVerification(BaseModel):
+    valid: bool
+    feedback: Optional[str]
+
 class AgentsTasksCrew():
     """Agents and Tasks crew
     This class is responsible for creating a crew of agents and tasks based on the provided YAML configurations.
@@ -12,7 +19,9 @@ class AgentsTasksCrew():
     def __init__(self):
         pass
 
-    def read_agents_tasks(self)-> dict:
+    def read_agents_tasks(self,
+                          agt_path:str="agents_few.yaml",
+                          tsk_path:str="tasks_few.yaml")-> dict:
         """
         Read agents and tasks from YAML files.
         This method loads the configurations for agents and tasks from the specified YAML files.
@@ -21,8 +30,8 @@ class AgentsTasksCrew():
         """
         # Define file paths for YAML configurations
         files = {
-            'agents': 'software_house/src/software_house/config/agents_few.yaml',
-            'tasks': 'software_house/src/software_house/config/tasks_few.yaml',
+            'agents': f'software_house/src/software_house/config/{agt_path}',
+            'tasks': f'software_house/src/software_house/config/{tsk_path}'
         }
 
         # Load configurations from YAML files
@@ -163,7 +172,6 @@ class AgentsTasksCrew():
             config=task_orchestrator['team_selection_task'],
             agent=team_selector_agent,
             output_file=orchestrator_output
-            # output_pydantic=AgentTask
         )
 
         return Crew(
@@ -205,23 +213,13 @@ class AgentsTasksCrew():
         try:
             # Dynamically create tasks based on the agents
             tasks = []
-            # output_dir = f"software_house/src/software_house/{folder_name}"
-            # # Ensure the output directory exists
-            # os.makedirs(output_dir, exist_ok=True)
 
             for agent_key, task_key in team["agents_tasks"].items():
                 if agent_key in agents and task_key in tasks_config:
-
-                    # # Define the output file path
-                    # output_file_path = os.path.join(output_dir, f"{agent_key}.txt")
-                    # # Create or overwrite the file (ensure it's ready for writing)
-                    # with open(output_file_path, "w", encoding="utf-8") as file:
-                    #     file.write("")  # Write an empty string to initialize or clear the file
                     
                     task = Task(
                         config=tasks_config[task_key],
                         agent=agents[agent_key],
-                        # output_file=output_file_path,
                         context=None,  # Initialize context as None
                     )
                     tasks.append(task)
@@ -229,8 +227,10 @@ class AgentsTasksCrew():
                     t = len(tasks)
                     # Set the context for the code aggregation task
                     if task_key == "code_aggregation_task" and t >= 2:
-                        t = len(tasks)
                         tasks[-1].context = [tasks[t-3], tasks[t-2]]
+
+                    if task_key == "evaluate_task" and t >= 2:
+                        tasks[-1].output_pydantic = CodeVerification
                     
         except Exception as e:
             print(f"Error while creating tasks: {e}")

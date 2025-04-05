@@ -5,7 +5,7 @@ import yaml
 import os
 import shutil
 
-from software_house.src.software_house.crew import AgentsTasksCrew
+from software_house.src.software_house.crew_v1 import AgentsTasksCrew
 # from crew import AgentsTasksCrew
 
 from dotenv import load_dotenv
@@ -51,17 +51,8 @@ class SoftwareHouse(Flow):
 
 		architeture = {}
 		try:
-			# architeture = architeture_created.raw
-
 			architeture["project_name"] = project_info[0]["project_name"]
 			architeture["project_description"] = architeture_created.raw
-
-			# debugging
-			print("#"*20,"STAFF SELECTED", "#"*20)
-			print(architeture)
-			print(type(architeture))
-			print("#"*55)
-
 		except Exception as e:
 			print(f"Error while converting selected_team to JSON: {e}")
 		return architeture
@@ -75,19 +66,19 @@ class SoftwareHouse(Flow):
 		"""
 		try:
 			# Load the available agents from the agents.yaml file
-			agents_file_path = 'software_house/src/software_house/config/agents_few.yaml'
+			agents_file_path = 'software_house/src/software_house/config/agent_dev.yaml'
 			with open(agents_file_path, 'r', encoding='utf-8') as file:
 				agents_data = yaml.safe_load(file)
 		except FileNotFoundError as e:
-			print(f"Error: {e}. Please check the file path for the agents_few.yaml.")
+			print(f"Error: {e}. Please check the file path for the agent_dev.yaml.")
 
 		try:
 			# Load the available tasks from the tasks.yaml file
-			tasks_file_path = 'software_house/src/software_house/config/tasks_few.yaml'
+			tasks_file_path = 'software_house/src/software_house/config/task_dev.yaml'
 			with open(tasks_file_path, 'r', encoding='utf-8') as tasks_file:
 				tasks_data = yaml.safe_load(tasks_file)
 		except FileNotFoundError as e:
-			print(f"Error: {e}. Please check the file path for the tasks_few.yaml.")
+			print(f"Error: {e}. Please check the file path for the task_dev.yaml.")
 
 		# Prepare the output in the format required for creating_crew_dev
 		agents_tasks = {}
@@ -95,11 +86,6 @@ class SoftwareHouse(Flow):
 			agent_name = task_details.get('agent')
 			if agent_name in agents_data:
 				agents_tasks[agent_name] = task_name
-				#agents_tasks[f"{agent_name}_and_goal_{task_name}_and_description"] = [{agent_name: agents_data[agent_name].get('goal')}, {task_name:task_details.get('description')}]
-
-		# print("#"*20,"AGENTS AND TASKS", "#"*20)
-		# print(agents_tasks)
-		# print("#"*55)
 
 		if not agents_tasks:
 			print("Error: No matching agents found for the tasks in the YAML files.")
@@ -109,7 +95,6 @@ class SoftwareHouse(Flow):
 		return agents_tasks_output
 
 	@listen(and_(software_architeture, available_agents))
-	# def project_info_and_agents_tasks(self, project_info:list, agents_tasks_output:dict)-> dict:
 	def project_info_and_agents_tasks(self, architeture:dict, agents_tasks_output:dict)-> dict:
 		"""
 		Combine the project information and available agents/tasks.
@@ -119,9 +104,7 @@ class SoftwareHouse(Flow):
 			agents_tasks_output: available agents and taskstasks
 		- output: Combined input data for the staff selector
 		"""
-		# if type(project_info[0]) != dict:
-		# 	print("Error: project_info[0] is not a dictionary. Please check the project description format.")
-		# 	return {}
+
 		if type(architeture) != dict:
 			print("Error: project_info[0] is not a dictionary. Please check the project description format.")
 			return {}
@@ -187,7 +170,7 @@ class SoftwareHouse(Flow):
 			selected_team_json: Selected team for the project in JSON format
 		- output: Software house team for the project
 		"""
-		# folder_name = input_data["project_name"]
+
 		try:
 			# Create the crew for the project using the selected team
 			atc = AgentsTasksCrew()

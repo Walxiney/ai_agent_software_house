@@ -1,124 +1,133 @@
+### Backend Code (Python with Flask)
+
 ```python
-# Backend: Flask Application
-
-# Install dependencies
-# pip install Flask Flask-Cors SQLAlchemy
-
-# app.py
 from flask import Flask, jsonify, request
-from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
-import random
+from sqlalchemy import Column, Integer, String
+from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app)
 
-# Database setup
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///pacman.db'
+# Configuration for database
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://username:password@localhost/pacman_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-# Database models
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    score = db.Column(db.Integer, default=0)
-    level = db.Column(db.Integer, default=1)
+class GameState(db.Model):
+    id = Column(Integer, primary_key=True)
+    pacman_position = Column(String, nullable=False)
+    ghost_positions = Column(String, nullable=False)
+    score = Column(Integer, default=0)
 
-class Game(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    game_data = db.Column(db.Text)
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'pacman_position': self.pacman_position,
+            'ghost_positions': self.ghost_positions,
+            'score': self.score
+        }
 
-# Game state
-class GameState:
-    def __init__(self):
-        self.pacman = {'x': 1, 'y': 1, 'lives': 3, 'score': 0}
-        self.ghosts = [{'x': 5, 'y': 5, 'state': 'Chase'}]
-        self.maze = [[0 for _ in range(10)] for _ in range(10)]  # Placeholder for the maze
+@app.route('/api/game/state', methods=['GET'])
+def get_game_state():
+    game_state = GameState.query.first()
+    return jsonify(game_state.to_dict()), 200
 
-    def update(self):
-        self.move_ghosts()
-        # Additional game logic here (collisions, scoring, etc.)
-
-    def move_ghosts(self):
-        for ghost in self.ghosts:
-            ghost['x'] += random.choice([-1, 0, 1])
-            ghost['y'] += random.choice([-1, 0, 1])
-
-game_state = GameState()
-
-@app.route('/start', methods=['POST'])
-def start_game():
-    game_state.__init__()  # Reset the game state
-    return jsonify(game_state.__dict__)
-
-@app.route('/update', methods=['POST'])
-def update_game():
-    game_state.update()
-    return jsonify(game_state.__dict__)
-
-@app.route('/score', methods=['POST'])
-def save_score():
+@app.route('/api/game/move', methods=['POST'])
+def move_player():
     data = request.json
-    new_user = User(score=data['score'], level=data['level'])
-    db.session.add(new_user)
+    direction = data.get('direction')
+
+    game_state = GameState.query.first()
+    # Logic to update pacman_position and ghost_positions based on direction
+    # For simplicity, let's assume new positions are 'new_pacman_position' and 'new_ghost_positions'
+    new_pacman_position = f"moved_{direction}"
+    new_ghost_positions = "ghost_positions_updated"
+
+    game_state.pacman_position = new_pacman_position
+    game_state.ghost_positions = new_ghost_positions
+    game_state.score += 10  # Logic for scoring should be expanded
     db.session.commit()
-    return jsonify(id=new_user.id)
+
+    return jsonify(game_state.to_dict()), 200
 
 if __name__ == '__main__':
     db.create_all()
     app.run(debug=True)
 ```
 
-```javascript
-// Frontend: React Application
+### Frontend Code (HTML + JavaScript with React)
 
-// Install dependencies
-// npx create-react-app pacman-frontend
-// cd pacman-frontend
-// npm install axios
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pacman Game</title>
+    <style>
+        body { display: flex; flex-direction: column; align-items: center; }
+        #game-board { width: 400px; height: 400px; position: relative; background-color: black; }
+        .pacman { width: 20px; height: 20px; background-color: yellow; position: absolute; border-radius: 50%; }
+        .ghost { width: 20px; height: 20px; background-color: red; border-radius: 50%; position: absolute; }
+    </style>
+</head>
+<body>
+    <h1>Pacman Game</h1>
+    <div id="game-board"></div>
+    <button onclick="move('up')">Up</button>
+    <button onclick="move('down')">Down</button>
+    <button onclick="move('left')">Left</button>
+    <button onclick="move('right')">Right</button>
+    <div>Score: <span id="score">0</span></div>
+    
+    <script>
+        const gameBoard = document.getElementById('game-board');
+        let pacman = document.createElement('div');
+        pacman.className = 'pacman';
+        gameBoard.appendChild(pacman);
 
-// src/App.js
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+        async function fetchGameState() {
+            const response = await fetch('http://localhost:5000/api/game/state');
+            const gameState = await response.json();
+            pacman.style.top = `${gameState.pacman_position.split('_')[1] * 20}px`;
+            pacman.style.left = `${gameState.pacman_position.split('_')[2] * 20}px`;
+            document.getElementById('score').innerText = gameState.score;
+            // Handle ghost positions similarly
+        }
 
-const App = () => {
-    const [gameData, setGameData] = useState(null);
-    const [score, setScore] = useState(0);
-    const [level, setLevel] = useState(1);
+        async function move(direction) {
+            await fetch('http://localhost:5000/api/game/move', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ direction })
+            });
+            fetchGameState();
+        }
 
-    useEffect(() => {
-        startGame();
-    }, []);
-
-    const startGame = async () => {
-        const response = await axios.post('http://localhost:5000/start');
-        setGameData(response.data);
-    };
-
-    const updateGame = async () => {
-        const response = await axios.post('http://localhost:5000/update');
-        setGameData(response.data);
-    };
-
-    const saveScore = async () => {
-        await axios.post('http://localhost:5000/score', { score: score, level: level });
-    };
-
-    return (
-        <div>
-            <h1>Pacman Game</h1>
-            {gameData && (
-                <div>
-                    <h2>Score: {gameData.pacman.score}</h2>
-                    <p>Lives: {gameData.pacman.lives}</p>
-                    <button onClick={updateGame}>Update Game</button>
-                    <button onClick={saveScore}>Save Score</button>
-                </div>
-            )}
-        </div>
-    );
-};
-
-export default App;
+        window.onload = fetchGameState;
+    </script>
+</body>
+</html>
 ```
+
+### Database Setup (PostgreSQL)
+Make sure to set up your PostgreSQL database and replace `username` and `password` in the backend code with your actual database credentials.
+
+1. Create a database:
+   ```sql
+   CREATE DATABASE pacman_db;
+   ```
+2. (Optional) Use the following SQL to create the necessary table if you want to do it manually:
+   ```sql
+   CREATE TABLE game_state (
+       id SERIAL PRIMARY KEY,
+       pacman_position VARCHAR(255) NOT NULL,
+       ghost_positions VARCHAR(255) NOT NULL,
+       score INT DEFAULT 0
+   );
+   ```
+
+With this structure, the Pacman game has a backend to manage game state, handling user movements and storing scores, while the frontend allows users to interact with the game and visualize the Pacman and ghost positions.

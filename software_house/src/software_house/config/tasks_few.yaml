@@ -59,7 +59,7 @@ code_task:
     
   expected_output: >
     Your Final answer must be the full frontend and backend code, only the frontend and backend code and nothing else.
-  agent: fullstack_engineer_agent
+  agent: fullstack_engineer
   output_file: software_house/src/software_house/agent_output/fullstack_engineer_agent.py
 
 review_task:
@@ -78,7 +78,7 @@ review_task:
   
   expected_output: >
     Your Final answer must be the full frontend and backend code, only the frontend and backend code and nothing else.
-  agent: qa_engineer_agent
+  agent: qa_engineer
   output_file: software_house/src/software_house/agent_output/qa_engineer_agent.py
 
 evaluate_task:
@@ -96,7 +96,7 @@ evaluate_task:
   
   expected_output: >
     Your Final answer must be the full frontend and backend code, only the frontend and backend code and nothing else.
-  agent: chief_qa_engineer_agent
+  agent: chief_qa_engineer
   output_file: software_house/src/software_house/agent_output/chief_qa_engineer_agent.py
 
 code_aggregation_task:
@@ -117,5 +117,5 @@ code_aggregation_task:
   expected_output: >
     The final output must be a structured frontend and backend project, properly documented, 
     with all required steps to execute the project. Output only the structured code and documentation.
-  agent: code_aggregator_agent
+  agent: code_aggregator
   output_file: software_house/src/software_house/agent_output/code_aggregator_agent.md

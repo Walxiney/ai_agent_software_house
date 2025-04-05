@@ -1,99 +1,71 @@
-# Arquitetura do Software para o Projeto "Pacman"
+## Arquitetura do Software para o Projeto "Pacman"
 
-## Visão Geral
+A arquitetura do sistema "Pacman" terá como objetivo garantir modularidade, escalabilidade e segurança. O sistema será dividido em camadas e utilizará as melhores práticas de desenvolvimento de software. As tecnologias recomendadas são Python para o backend, enquanto o front-end será desenvolvido utilizando uma tecnologia adequada para jogos, como Unity ou Godot. 
 
-A arquitetura do software para o jogo "Pacman" será composta por um sistema modular e escalável, que separa as responsabilidades em diferentes camadas: frontend, backend, e banco de dados. Esta abordagem permite um desenvolvimento mais contínuo e organizado, além de facilitar a manutenção e a escalabilidade.
+### 1. Visão Geral da Arquitetura
 
-### Camadas
+A arquitetura será composta pelas seguintes camadas e componentes principais:
 
 1. **Frontend**:
-    - **Tecnologia**: React.js (ou similar)
-    - **Função**: Responsável pela interface gráfica com o usuário. Utiliza a biblioteca React para construir uma UI interativa e responsiva, permitindo que o jogador veja o labirinto e controle Pac-Man.
-    - **Módulos**:
-        - Tela de Inicialização
-        - Labirinto/Layout
-        - Pontuação
-        - Game Over
+   - **Descrição**: Camada responsável pela interface do usuário, permitindo que os jogadores interajam com o jogo.
+   - **Tecnologias Recomendadas**: Unity ou Godot, React para controle de interface, CSS para estilização, e HTML5 para renderização.
 
 2. **Backend**:
-    - **Tecnologia**: Python com Flask ou FastAPI
-    - **Função**: Lida com a lógica do jogo, gerenciamento de estado, e comunicação com o frontend. Este será responsável pelo gerenciamento de estados de Pac-Man e fantasmas, detecção de colisão, e progressão de níveis.
-    - **Módulos**:
-        - Gerenciamento de Jogo (estado, pontuação, vidas)
-        - Comportamento dos Fantasmas
-        - Conexão com Banco de Dados
-        - API REST para comunicação com o frontend
+   - **Descrição**: Camada que gerencia a lógica de jogo, controle dos estados, e oferece APIs para comunicação com o front-end.
+   - **Tecnologia Recomendadas**: Python com Flask ou FastAPI para desenvolvimento de APIs RESTful.
 
 3. **Banco de Dados**:
-    - **Tecnologia**: SQLite ou PostgreSQL
-    - **Função**: Armazena dados relacionados a pontuações, níveis e perfis de jogadores (se necessário).
-    - **Estrutura**:
-        - Tabela de Usuários (id, score, level, etc.)
-        - Tabela de Partidas (id, user_id, game_data, etc.)
+   - **Descrição**: Armazena informações persistentes sobre o progresso do jogo, pontuações e níveis dos jogadores.
+   - **Tecnologia Recomendadas**: PostgreSQL ou MongoDB. O PostgreSQL oferece robustez e suporte a transações, enquanto o MongoDB pode ser utilizado para dados não estruturados.
 
-### Diagramas UML
+4. **API de Comunicação**:
+   - **Descrição**: Interfaces para comunicação entre o front-end e back-end, facilitando a troca de dados.
+   - **Tecnologia Recomendadas**: REST API utilizando Flask ou FastAPI.
 
-1. **Diagrama de Casos de Uso**
+5. **Segurança**:
+   - **Descrição**: Implementação de práticas de segurança para proteger dados do usuário e garantir a integridade do jogo.
+   - **Tecnologia Recomendadas**: HTTPS, autenticação JWT, e sanitização de entradas.
 
-   ```plaintext
-   +-----------------------+
-   |       Jogador         |
-   +-----------------------+
-              |
-              | inicia jogo
-              v
-   +-----------------------+
-   |      Jogo            |
-   +-----------------------+
-   | -Inicio              |
-   | -Game Loop           |
-   | -Detectar Colisão    |
-   | -Gerenciar Estado     |
-   +-----------------------+
-   ```
+### 2. Componentes Principais
 
-2. **Diagrama de Classes**
+#### 2.1. Diagrama de Classes UML
 
-   ```plaintext
-   +-----------------------+          +-----------------------+
-   |       PacMan         |<---------|      Ghost            |
-   +-----------------------+          +-----------------------+
-   | -x: int              |          | -x: int              |
-   | -y: int              |<---------| -y: int              |
-   | -lives: int          |          | -state: String       |
-   | -score: int          |          +-----------------------+
-   | +move()              |          | +move()              | 
-   | +eatPellet()         |          | +updateBehavior()     |
-   +-----------------------+          +-----------------------+
-   ```
+*A seguir está uma visão simplificada do diagrama de classes para referência:*
 
-3. **Diagrama de Sequência**
+- **Pacman**: Classe que controla o movimento e estado do Pacman (normal, aterrorizado).
+- **Ghost**: Classe que representa cada fantasma, incluindo sua lógica de comportamento (Blinky, Pinky, Inky, Clyde).
+- **Maze**: Classe que define a estrutura do labirinto e interação com objetos (pellets, power pellets).
+- **GameController**: Classe que gerencia o ciclo de jogo, pontuação e transições de níveis.
+- **ScoreManager**: Classe que lida com a lógica de pontuação.
 
-   ```plaintext
-   Jogador -> Frontend: Iniciar Jogo
-   Frontend -> Backend: Carregar Estado
-   Backend -> Banco de Dados: Recuperar Dados
-   Banco de Dados -> Backend: Dados do Jogo
-   Backend -> Frontend: Enviar Estado Atual
-   Frontend -> Jogador: Exibir Jogo
-   ```
+#### 2.2. Lógica de jogo
 
-### Justificativa das Escolhas Tecnológicas e Padrões Adotados
+- **State Management**: Usar um padrão de gerenciamento de estado para Pacman e fantasmas (normal, aterrorizado, chase, scatter).
+- **Pathfinding**: Implementar um algoritmo básico de pathfinding, como A* para o movimento dos fantasmas, garantindo que eles sigam Pac-Man de forma eficiente.
 
-- **React.js** no frontend foi escolhido pelas suas capacidades de construir interfaces dinâmicas de forma eficiente e reutilizável.
-- **Python** como linguagem backend foi escolhido pela sua simplicidade e pelo suporte a frameworks robustos como Flask e FastAPI, que facilitam a construção de APIs RESTful.
-- **SQLite** ou **PostgreSQL** são escolhas adequadas para o banco de dados, fornecendo robustez e desempenho, além de eliminar a complexidade de configuração.
+### 3. Justificativa das Tecnologias e Padrões
 
-### Plano para Comunicação Eficiente entre Componentes e Fluxo de Dados
+- **Python**: Selecionado para o backend pela sua simplicidade e robustez, além de ter uma vasta biblioteca para desenvolvimento de jogos e algoritmos.
+- **Flask/FastAPI**: Proporcionam facilidade na criação de APIs RESTful, com suporte para assíncrono e endpoints necessários para a comunicação em tempo real.
+- **PostgreSQL/MongoDB**: Oferecem a flexibilidade e robustez necessárias para manter os dados do jogo, com capacidade de escalabilidade à medida que a base de usuários cresce.
 
-- **APIs RESTful** serão utilizadas para permitir a comunicação entre o frontend e o backend. O backend irá fornecer endpoints para iniciar o jogo, recuperar o estado do jogo, e atualizar a pontuação.
-- **Websockets** podem ser considerados para uma comunicação em tempo real, especialmente se futuramente decidirmos incluir modos multiplayer.
+### 4. Comunicação e Fluxo de Dados
 
-### Estrutura de Dados para o Jogo
+#### 4.1. Comunicação entre Componentes
 
-- O labirinto é representado por uma matriz bidimensional. Cada célula contém informações sobre o tipo de tile (parede, pellet, power pellet, etc.).
-- Os estados de Pac-Man e dos fantasmas serão geridos por um sistema de gerenciamento centralizado, utilizando um padrão de projeto de estado, permitindo transitions entre os diferentes modos (Chase, Scatter, Frightened).
+- **API RESTful**: O front-end se comunicará com o back-end por meio de APIs REST, solicitando informações sobre o estado do jogo e enviando comandos de jogador (movimento de Pac-Man, coleta de pellets).
+- **WebSocket (opcional)**: Para comunicação em tempo real entre servidor e cliente, permitindo atualizações instantâneas do estado do jogo.
 
-## Conclusão
+#### 4.2. Fluxo de Dados
 
-A arquitetura proposta oferece uma solução robusta para o desenvolvimento do jogo "Pacman", atendendo aos requisitos funcionais e não funcionais estabelecidos, enquanto garante modularidade, escalabilidade e segurança. A divisão clara entre as camadas facilita o fluxo de dados e a manutenção do sistema, permitindo um desenvolvimento ágil e eficiente.
+1. O jogador manda um comando de movimento através da interface (tecla pressionada).
+2. O Frontend envia uma solicitação ao Backend via API com o movimento solicitado.
+3. O Backend processa a solicitação, verifica colisões, atualiza a pontuação e o estado do jogo.
+4. O Backend retorna o novo estado do jogo ao Frontend.
+5. O Frontend atualiza a interface do usuário de acordo com as novas informações, refletindo as mudanças da ação do jogador.
+
+### 5. Considerações Finais
+
+A arquitetura do software para o projeto "Pacman" assegura que todos os componentes são separados em camadas, cada uma responsável por uma tarefa específica, com ênfase na modularidade e escalabilidade. O uso das melhores práticas em desenvolvimento de software, bem como a escolha das tecnologias adequadas, garantirá que o jogo não só cumpra os requisitos funcionais mas também proporcionará uma experiência de jogo rica e envolvente. Um foco na segurança e nas boas práticas de codificação será uma prioridade em todas as fases do desenvolvimento.
+
+Com esta arquitetura, o projeto "Pacman" será uma plataforma robusta e escalável, capaz de atender às expectativas dos jogadores e permitir fácil manutenção e evolução do sistema ao longo do tempo.

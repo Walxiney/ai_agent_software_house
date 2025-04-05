@@ -1,0 +1,57 @@
+code_task:
+  name: code_task
+  description: >
+    You are responsible for writing the entire codebase for the project "{project_name}". 
+
+    Instructions
+    ------------
+    - Implement the complete functionality described below, ensuring clean, efficient, and well-documented Python code.
+    - Your code must follow the best practices, including docstrings, type hints, and modular structure.
+    - Ensure that the code is well-organized, maintainable, and scalable.
+    - **DO NOT include explanations, comments outside the code, or formatting artifacts**—only return the Python code itself.
+    - If the project requires a frontend, you can choose the best approach and stack to integrate with the backend.
+  
+    Project Description:
+    {project_description}
+
+    Must incorporate the following feedback if present:
+    {feedback}
+    
+  expected_output: >
+    The final output must be only the fully implemented Python code, nothing else.
+  agent: software_engineer
+  output_file: software_house/src/software_house/agent_output/software_engineer.py
+
+evaluate_task:
+  name: evaluate_task
+  description: >
+    You are responsible for ensuring the correctness, completeness, and efficiency of the code written for "{project_name}". 
+
+    Instructions
+    ------------
+    - **Execute the code** and verify that it runs without errors.
+    - **Validate logic and functionality** to ensure it meets the project requirements.
+    - **Check for performance bottlenecks** and suggest improvements if necessary.
+    - **Enforce best coding practices**, including readability, security, and maintainability.
+    - If the code is correct and meets all requirements, output:  
+      ```json
+      "valid": true
+      ```
+    - If the code is incorrect, output:  
+      ```json
+      "valid": false, "feedback": "Detailed explanation of issues and how to fix them."
+      ```
+    - **Do not modify the code yourself**—instead, return feedback for the software engineer to make corrections.
+
+    Your final response must include:
+    - valid: True/False  
+    - feedback: Explain the issues and how to fix them
+
+    Project Description:
+    {project_description}
+  
+  expected_output: >
+    Pass: True/False  
+    Feedback: Explain the issues and how to fix them
+  agent: chief_qa_engineer
+  output_file: software_house/src/software_house/agent_output/chief_qa_engineer.json

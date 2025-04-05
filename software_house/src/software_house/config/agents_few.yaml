@@ -30,7 +30,7 @@ technical_writer:
   verbose: true
   allow_delegation: false
 
-fullstack_engineer_agent:
+fullstack_engineer:
   role: >
     Senior FullStack Software Engineer
   goal: >
@@ -40,6 +40,7 @@ fullstack_engineer_agent:
     Your expertise in programming in python. and do your best to produce perfect code as a experienced fullstack developer
   verbose: true
   allow_delegation: false
+  allow_execution: true
 
 qa_engineer_agent:
   role: >
@@ -55,8 +56,9 @@ qa_engineer_agent:
     You also check for security vulnerabilities, and logic errors
   verbose: true
   allow_delegation: false
+  allow_execution: true
 
-chief_qa_engineer_agent:
+chief_qa_engineer:
   role: >
     Chief Software Quality Control Engineer
   goal: >
@@ -66,8 +68,9 @@ chief_qa_engineer_agent:
     super dedicate to make high quality code.
   verbose: true
   allow_delegation: false
+  allow_execution: true
 
-code_aggregator_agent:
+code_aggregator:
   role: >
     Code Aggregator & Organizer
   goal: >

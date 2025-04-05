@@ -1,0 +1,63 @@
+validator_python_code:
+  description: >
+    You are helping create a game using python, these are the instructions:
+
+    Instructions
+    ------------
+    {project_description}
+
+    You will look over the code to insure that it is complete and
+    does the job that it is supposed to do.
+
+    Código para ser analisado:
+    ------------
+    {code}
+
+    Sua resposta final deve conter:
+    - Valid: True/False
+    - Feedback: Se houver problema no código, descreva de forma clara e objetiva, senão deixe em branco.
+
+  expected_output: >
+    valid: True/False
+    feedback: Se houver problema no código, descreva de forma clara e objetiva, senão deixe em branco.
+  agent: python_validator
+
+# validator_python_code:
+#   description: >
+#     Você receberá um código Python e deve validar se ele está correto e funcional, se o código falhar em algum critério solicite correções ao Python developer.
+
+#     O que deve verificar:
+#     - O código não pode conter erros de sintaxe.
+#     - O código deve ser atender aos requisitos especificados.
+#     - O código deve ser limpo, bem estruturado e seguir as melhores práticas de programação.
+#     - O código deve ser bem comentado e conter docstrings explicativas.
+#     - O código deve ser eficiente e otimizado para desempenho.
+#     - O Código não deve conter caraceres extras (aspas, crases, ou comentarios fora do código principal).
+
+#     Requisitos obrigatórios que o developer seguiu e você deve respeitar e validar:
+#     - O código deve ser 100% funcional e se possivel testado antes de ser entregue.
+#     - O código deve ser limpo, bem estruturado e seguir as melhores práticas de programação.
+#     - O código deve ser bem comentado e conter docstrings explicativas.
+#     - O código deve ser eficiente e otimizado para desempenho.
+#     - O código final deve ser apenas o código sem pontuações aspas ou explicações que não fazem parte do código.
+
+#     Informações atualizadas sobre a library da OpenAI, caso seja necessaria:
+#     - https://platform.openai.com/docs/api-reference/chat/create
+#     - Importação deve usar: from openai import OpenAI
+#     - A chave da openai deve ser passada desta forma: openai_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY")).
+#     - O chatcompletion deve ser chamado desta forma: openai_client.chat.completions.create(...).
+
+#     Descrição da tarefa para a qual o código foi desenvolvido:
+#     {project_description}
+
+#     Código para ser analisado:
+#     {code}
+
+#     Sua resposta final deve conter:
+#     - Valid: True/False
+#     - Feedback: Se houver problema no código, descreva de forma clara e objetiva, senão deixe em branco.
+
+#   expected_output: >
+#     valid: True/False
+#     feedback: Se houver problema no código, descreva de forma clara e objetiva, senão deixe em branco.
+#   agent: python_validator
