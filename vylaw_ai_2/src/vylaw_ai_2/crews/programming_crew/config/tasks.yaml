@@ -1,0 +1,52 @@
+# management:
+#   description: >
+#     Oversee the workflow between the Developer and QA Engineer:
+#     - Ensure the Developer submits high-quality code.
+#     - If QA finds issues, reassign the task to the Developer for correction.
+#     - Once the code is validated, finalize the process.
+#   expected_output: >
+#     Code validation workflow completed successfully.
+#   agent: manager
+
+develop_python_code:
+  description: >
+    You will create a game using python, these are the instructions:
+
+    Instructions
+    ------------
+    {project_description}
+    
+    Use o feedback (se houver) do Python Validator para ajustar erros encontrados no código, Obrigatóriamente faça apenas os ajustes solicitados nada mais.
+    ------------
+    {feedback}
+
+    Use o seu código anterior como base para a alteração nunca recomece do zero apenas faça as alterações necessárias.
+    ------------
+    {code}
+  expected_output: >
+    Your Final answer must be the full python code, only the python code and nothing else.
+  agent: python_developer
+
+validator_python_code:
+  description: >
+    You are helping create a game using python, these are the instructions:
+
+    Instructions
+    ------------
+    {project_description}
+
+    You will look over the code to insure that it is complete and
+    does the job that it is supposed to do.
+
+    Código para ser analisado:
+    ------------
+    {code}
+
+    Sua resposta final deve conter:
+    - Valid: True/False
+    - Feedback: Se houver problema no código, descreva de forma clara e objetiva, senão deixe em branco.
+
+  expected_output: >
+    valid: True/False
+    feedback: Se houver problema no código, descreva de forma clara e objetiva, senão deixe em branco.
+  agent: python_validator
